@@ -290,7 +290,7 @@ void saveBenchmarkResults(
             output << heap.substr(firstValue, endValue - firstValue) << '\n';
         }
 
-        output << std::fixed << std::setprecision(3)
+        output << std::fixed << std::setprecision(6)
                << "Insertion (" << count << " elements) : " << result.insertionMs << " ms\n"
                << "Recherche (" << result.queries << " requetes, "
                << result.found << " trouvees) : " << result.searchMs << " ms\n"
@@ -381,7 +381,7 @@ void runInteractiveMenu() {
                 values.push_back(distribution(generator));
             }
 
-            const std::size_t queryCount = std::min<std::size_t>(count, 1000);
+            const std::size_t queryCount = std::min<std::size_t>(count, 20);
             std::vector<int> queries;
             queries.reserve(queryCount);
             for (std::size_t i = 0; i < queryCount; ++i) {
@@ -396,7 +396,7 @@ void runInteractiveMenu() {
             saveBenchmarkResults(count, results);
 
             std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
-                      << std::fixed << std::setprecision(3);
+                      << std::fixed << std::setprecision(6);
             for (const BenchmarkResult& result : results) {
                 std::cout << result.containerName
                           << " : insertion " << result.insertionMs << " ms, recherche "

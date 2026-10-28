@@ -19,7 +19,8 @@ Fonctionnement :
 - Le choix 5 ecrit les tas courants dans output.txt.
 - Le choix 6 demande N, genere N valeurs aleatoires identiques pour les trois
   implementations et mesure insertion, recherche, suppression de tous les
-  elements par minimum et preparation de l'affichage.
+  elements par minimum et preparation de l'affichage. Jusqu'a 20 recherches
+  reussies sont mesurees afin de limiter le temps du conteneur list.
 - Les resultats du benchmark remplacent le contenu precedent de output.txt.
 - N doit etre compris entre 0 et 200000.
 
