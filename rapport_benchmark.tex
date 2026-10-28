@@ -1,0 +1,183 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{array}
+
+\geometry{margin=2.3cm}
+\sisetup{
+  output-decimal-marker = {,},
+  group-separator = {\,},
+  group-minimum-digits = 4
+}
+
+\title{Comparaison de conteneurs pour l'implémentation d'un tas min}
+\author{ERRAMI Youssef}
+\date{28 octobre 2026}
+
+\begin{document}
+\maketitle
+
+\section{Objectif}
+
+Ce travail compare trois conteneurs C++ --- \texttt{std::vector},
+\texttt{std::list} et \texttt{std::map} --- utilisés comme stockage des
+noeuds d'une même implémentation de tas binaire min. Le minimum est à la
+racine, à l'indice zéro. Les mesures portent sur l'insertion de $N$ valeurs,
+la recherche de valeurs présentes, la suppression répétée du minimum jusqu'à
+vider le tas et la préparation de son affichage sous forme de chaîne.
+
+\section{Environnement de test}
+
+\begin{itemize}
+  \item Ordinateur : MSI Stealth GS66 12UGS.
+  \item Processeur : Intel Core i7-12700H, 14 coeurs et 20 processeurs logiques
+        (informations relevées dans Windows).
+  \item Mémoire vive : 16 Go DDR5 (capacité annoncée et cohérente avec les
+        15,7 Gio de mémoire physique exposés par Windows).
+  \item Carte graphique : NVIDIA GeForce RTX 3070 Ti Laptop GPU. Elle n'est
+        pas sollicitée par ce benchmark, qui mesure du code C++ exécuté sur le
+        processeur.
+  \item Système : Windows 11 Pro.
+  \item Compilateur : g++ 16.2.0 (MSYS2), avec les options
+        \texttt{-std=c++17 -O2 -Wall -Wextra -pedantic}.
+\end{itemize}
+
+\section{Protocole}
+
+Les tailles testées sont $N \in \{100, 500, 1000, 2000, 5000\}$. Chaque
+taille a été mesurée cinq fois. À l'intérieur d'un essai, les trois
+implémentations reçoivent exactement les mêmes valeurs aléatoires. Les valeurs
+et l'ordre des conteneurs sont régénérés à chaque essai. Les tableaux
+\ref{tab:insertion} à \ref{tab:affichage} présentent les médianes des cinq
+mesures, en millisecondes.
+
+Pour la recherche, le programme effectue jusqu'à 20 requêtes réussies choisies
+parmi les valeurs insérées. Le nombre de requêtes est donc égal à
+$\min(N,20)$. La suppression chronométrée vide le tas en retirant
+systématiquement son minimum ; elle ne mesure pas la suppression d'une valeur
+arbitraire. Le temps d'affichage correspond à la construction de la chaîne
+représentant le tas et n'inclut ni l'ouverture du fichier ni l'écriture sur le
+disque. Les opérations de génération des données et les opérations hors de la
+phase mesurée ne sont pas incluses dans les chronométrages.
+
+\section{Résultats}
+
+\subsection{Insertion de $N$ valeurs}
+
+\begin{table}[htbp]
+\centering
+\caption{Temps médian d'insertion (ms)}
+\label{tab:insertion}
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+\midrule
+100  & 0.004400 & 0.031400 & 0.037800 \\
+500  & 0.015700 & 0.640700 & 0.188000 \\
+1000 & 0.029100 & 2.938900 & 0.367700 \\
+2000 & 0.051300 & 14.957100 & 0.875000 \\
+5000 & 0.125200 & 128.559500 & 2.044300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Recherche de valeurs présentes}
+
+\begin{table}[htbp]
+\centering
+\caption{Temps médian de recherche (ms, jusqu'à 20 requêtes)}
+\label{tab:recherche}
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+\midrule
+100  & 0.001000 & 0.022500 & 0.014700 \\
+500  & 0.002200 & 1.231700 & 0.132500 \\
+1000 & 0.004300 & 4.685800 & 0.280400 \\
+2000 & 0.008000 & 25.391200 & 0.894800 \\
+5000 & 0.019300 & 361.234600 & 2.830600 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Suppression répétée du minimum}
+
+\begin{table}[htbp]
+\centering
+\caption{Temps médian pour vider le tas par suppressions du minimum (ms)}
+\label{tab:suppression}
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+\midrule
+100  & 0.007200 & 0.039400 & 0.057400 \\
+500  & 0.034000 & 1.214800 & 0.455600 \\
+1000 & 0.070800 & 5.464300 & 1.124900 \\
+2000 & 0.159000 & 29.574400 & 3.522300 \\
+5000 & 0.451400 & 244.883200 & 10.347000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Préparation de l'affichage}
+
+\begin{table}[htbp]
+\centering
+\caption{Temps médian de création de la chaîne d'affichage (ms)}
+\label{tab:affichage}
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+\midrule
+100  & 0.026100 & 0.011900 & 0.010200 \\
+500  & 0.062800 & 0.259400 & 0.057800 \\
+1000 & 0.069200 & 0.966400 & 0.096600 \\
+2000 & 0.147700 & 6.062300 & 0.247500 \\
+5000 & 0.305800 & 50.326700 & 0.583100 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analyse}
+
+\texttt{vector} est le meilleur choix pour cette représentation du tas : les
+noeuds d'un arbre binaire sont repérés par des indices (parent
+$\lfloor(i-1)/2\rfloor$, enfants $2i+1$ et $2i+2$), et \texttt{vector}
+fournit un accès direct par indice. Pour $N=5000$, son temps médian est de
+\SI{0.1252}{ms} pour l'insertion, \SI{0.0193}{ms} pour les recherches
+mesurées, \SI{0.4514}{ms} pour vider le tas et \SI{0.3058}{ms} pour préparer
+l'affichage.
+
+\texttt{map} est plus lent que \texttt{vector}, car chaque accès par indice
+recherche une clé dans une structure ordonnée. Il reste toutefois bien plus
+rapide que \texttt{list} pour les opérations du tas dans cette implémentation.
+L'accès à l'élément d'indice $i$ dans une liste nécessite de parcourir ses
+noeuds ; cette représentation est donc mal adaptée aux échanges entre parent
+et enfants. À $N=5000$, les recherches chronométrées sur \texttt{list}
+prennent environ 18\,700 fois plus de temps que sur \texttt{vector}. Ce
+résultat reflète le coût combiné de l'algorithme de recherche linéaire et des
+accès répétés par indice dans une liste chaînée.
+
+Les durées sont très courtes pour les petits $N$ et peuvent varier avec la
+charge de la machine, la fréquence du processeur et le système d'exploitation.
+Les valeurs sont donc présentées comme des mesures observées dans cet
+environnement, et non comme des constantes universelles. Les CSV fournis
+conservent les essais individuels et les médianes calculées.
+
+\section{Conclusion}
+
+Pour un tas binaire min stocké sous forme de tableau, \texttt{std::vector}
+est le conteneur recommandé parmi les trois testés. \texttt{std::map} peut
+servir de comparaison, mais son accès indexé ajoute un coût sans avantage
+particulier pour la structure du tas. \texttt{std::list} est à éviter ici,
+car le tas a besoin d'accéder rapidement à des positions calculées par indice.
+Cette expérience compare les conteneurs utilisés par une même implémentation
+de tas ; elle ne compare pas les performances à celles d'une file de priorité
+standard ni celles d'un arbre binaire de recherche.
+
+\end{document}
