@@ -1,7 +1,29 @@
-Affichage des tas min (ordre interne du tableau du tas)
+BENCHMARK DES TAS MIN
+Nombre d'elements inseres : 10
+Les trois structures utilisent les memes valeurs aleatoires.
+Les durees mesurees n'incluent pas l'ecriture de ce fichier.
 
-vector : [8]
-list : [8]
-map : [8]
+=== Conteneur : vector ===
+Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Minimum : 3
+Insertion (10 elements) : 0.004 ms
+Recherche (10 requetes, 10 trouvees) : 0.000 ms
+Suppression de tous les elements par minimum : 0.004 ms
+Preparation de l'affichage : 0.041 ms
 
-La racine de chaque tas est son element minimum.
+=== Conteneur : list ===
+Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Minimum : 3
+Insertion (10 elements) : 0.009 ms
+Recherche (10 requetes, 10 trouvees) : 0.001 ms
+Suppression de tous les elements par minimum : 0.005 ms
+Preparation de l'affichage : 0.003 ms
+
+=== Conteneur : map ===
+Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Minimum : 3
+Insertion (10 elements) : 0.009 ms
+Recherche (10 requetes, 10 trouvees) : 0.001 ms
+Suppression de tous les elements par minimum : 0.010 ms
+Preparation de l'affichage : 0.003 ms
+
