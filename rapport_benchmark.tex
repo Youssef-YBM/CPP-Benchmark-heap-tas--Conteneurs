@@ -52,9 +52,11 @@ vider le tas et la préparation de son affichage sous forme de chaîne.
 Les tailles testées sont $N \in \{100, 500, 1000, 2000, 5000\}$. Chaque
 taille a été mesurée cinq fois. À l'intérieur d'un essai, les trois
 implémentations reçoivent exactement les mêmes valeurs aléatoires. Les valeurs
-et l'ordre des conteneurs sont régénérés à chaque essai. Les tableaux
+sont régénérées à chaque essai, mais l'ordre des conteneurs est fixe :
+\texttt{vector}, puis \texttt{list}, puis \texttt{map}. Les tableaux
 \ref{tab:insertion} à \ref{tab:affichage} présentent les médianes des cinq
-mesures, en millisecondes.
+mesures, en millisecondes. Les fichiers CSV conservent les temps de chaque
+essai ainsi que les médianes et les valeurs minimales et maximales.
 
 Pour la recherche, le programme effectue jusqu'à 20 requêtes réussies choisies
 parmi les valeurs insérées. Le nombre de requêtes est donc égal à
@@ -165,9 +167,27 @@ accès répétés par indice dans une liste chaînée.
 
 Les durées sont très courtes pour les petits $N$ et peuvent varier avec la
 charge de la machine, la fréquence du processeur et le système d'exploitation.
-Les valeurs sont donc présentées comme des mesures observées dans cet
-environnement, et non comme des constantes universelles. Les CSV fournis
-conservent les essais individuels et les médianes calculées.
+L'ordre fixe des conteneurs peut également introduire un biais lié à la charge
+ou à la température du processeur. Par exemple, pour la recherche sur
+\texttt{list} avec $N=5000$, les cinq temps vont d'environ
+\SI{182.9639}{ms} à \SI{399.694}{ms}. Les valeurs sont donc présentées comme
+des mesures observées dans cet environnement, et non comme des constantes
+universelles.
+
+\section{Reproductibilité}
+
+Compiler le programme avec les mêmes options :
+\begin{verbatim}
+g++ -std=c++17 -O2 -Wall -Wextra -pedantic benchmark_heap.cpp -o benchmark_heap.exe
+\end{verbatim}
+
+Lancer \texttt{benchmark\_heap.exe}, choisir l'option 6 et saisir une taille
+$N$. Pour reproduire les tableaux, répéter le test cinq fois pour chacune des
+tailles 100, 500, 1000, 2000 et 5000. Le fichier
+\texttt{benchmark\_mesures\_brutes.csv} contient les essais de cette campagne ;
+\texttt{benchmark\_resultats.csv} contient leurs médianes et leurs étendues.
+Les tirages aléatoires étant renouvelés, une nouvelle campagne produira des
+valeurs légèrement différentes.
 
 \section{Conclusion}
 
