@@ -7,8 +7,31 @@
 \usepackage{booktabs}
 \usepackage{siunitx}
 \usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
 
 \geometry{margin=2.3cm}
+\definecolor{bleufonce}{HTML}{123B63}
+\definecolor{bleuclair}{HTML}{2F80C1}
+\definecolor{turquoise}{HTML}{159A9C}
+\definecolor{orange}{HTML}{E18A36}
+\definecolor{grisclair}{HTML}{F1F5F9}
+\pgfplotsset{compat=1.17}
+\titleformat{\section}
+  {\Large\bfseries\color{bleufonce}}
+  {\thesection}{0.7em}{}
+  [\vspace{0.2em}{\color{bleuclair}\titlerule}]
+\titleformat{\subsection}
+  {\large\bfseries\color{bleuclair}}
+  {\thesubsection}{0.7em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{bleufonce}Benchmark des tas min}
+\fancyhead[R]{\small\color{bleufonce}ERRAMI Youssef}
+\fancyfoot[C]{\color{bleufonce}\thepage}
+\setlength{\headheight}{15pt}
 \sisetup{
   output-decimal-marker = {,},
   group-separator = {\,},
@@ -20,7 +43,28 @@
 \date{28 octobre 2026}
 
 \begin{document}
-\maketitle
+\begin{center}
+  {\color{bleuclair}\rule{\textwidth}{1.2pt}}\\[0.8em]
+  {\Huge\bfseries\color{bleufonce}
+    Comparaison de conteneurs\\[0.2em]
+    pour un tas min}\\[0.6em]
+  {\Large\color{bleuclair}Benchmark expérimental en C++}\\[1.2em]
+  {\large\bfseries ERRAMI Youssef}\\[0.3em]
+  {\color{bleufonce}28 octobre 2026}\\[0.8em]
+  {\color{bleuclair}\rule{\textwidth}{1.2pt}}
+\end{center}
+\vspace{0.8em}
+
+\noindent
+\colorbox{grisclair}{%
+  \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+    \textcolor{bleufonce}{\textbf{Résultat principal.}}
+    Pour ce tas binaire indexé, \texttt{std::vector} obtient les temps les
+    plus faibles pour l'insertion, la recherche et la suppression du minimum.
+    Les graphiques ci-dessous présentent les médianes de cinq essais pour
+    chaque taille testée.%
+  }%
+}
 
 \section{Objectif}
 
@@ -145,6 +189,133 @@ phase mesurée ne sont pas incluses dans les chronométrages.
 \end{tabular}
 \end{table}
 
+\section{Visualisation graphique}
+
+Les axes verticaux sont logarithmiques afin de rendre visibles les trois
+conteneurs malgré les écarts de temps importants. Chaque point représente la
+médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
+
+\pgfplotsset{
+  benchmark axis/.style={
+    width=0.92\textwidth,
+    height=6.2cm,
+    xmode=log,
+    ymode=log,
+    xmin=100,
+    xmax=5000,
+    xtick={100,500,1000,2000,5000},
+    xticklabels={100,500,1000,2000,5000},
+    xlabel={Nombre d'éléments $N$},
+    ylabel={Temps médian (ms)},
+    grid=both,
+    major grid style={gray!30},
+    minor grid style={gray!12},
+    tick label style={font=\small},
+    label style={font=\small\color{bleufonce}},
+    legend style={
+      at={(0.5,-0.25)},
+      anchor=north,
+      legend columns=3,
+      draw=none,
+      font=\small
+    },
+    line width=1.1pt,
+    mark size=2.5pt
+  }
+}
+
+\subsection{Insertion}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (100,0.0044) (500,0.0157) (1000,0.0291) (2000,0.0513) (5000,0.1252)
+};
+\addlegendentry{\texttt{vector}}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (100,0.0314) (500,0.6407) (1000,2.9389) (2000,14.9571) (5000,128.5595)
+};
+\addlegendentry{\texttt{list}}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (100,0.0378) (500,0.1880) (1000,0.3677) (2000,0.8750) (5000,2.0443)
+};
+\addlegendentry{\texttt{map}}
+\end{axis}
+\end{tikzpicture}
+\caption{Temps médian d'insertion de $N$ éléments.}
+\label{fig:insertion}
+\end{figure}
+
+\subsection{Recherche}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (100,0.0010) (500,0.0022) (1000,0.0043) (2000,0.0080) (5000,0.0193)
+};
+\addlegendentry{\texttt{vector}}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (100,0.0225) (500,1.2317) (1000,4.6858) (2000,25.3912) (5000,361.2346)
+};
+\addlegendentry{\texttt{list}}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (100,0.0147) (500,0.1325) (1000,0.2804) (2000,0.8948) (5000,2.8306)
+};
+\addlegendentry{\texttt{map}}
+\end{axis}
+\end{tikzpicture}
+\caption{Temps médian pour jusqu'à 20 recherches de valeurs présentes.}
+\label{fig:recherche}
+\end{figure}
+
+\subsection{Suppression répétée du minimum}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (100,0.0072) (500,0.0340) (1000,0.0708) (2000,0.1590) (5000,0.4514)
+};
+\addlegendentry{\texttt{vector}}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (100,0.0394) (500,1.2148) (1000,5.4643) (2000,29.5744) (5000,244.8832)
+};
+\addlegendentry{\texttt{list}}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (100,0.0574) (500,0.4556) (1000,1.1249) (2000,3.5223) (5000,10.3470)
+};
+\addlegendentry{\texttt{map}}
+\end{axis}
+\end{tikzpicture}
+\caption{Temps médian pour vider le tas en retirant successivement le minimum.}
+\label{fig:suppression}
+\end{figure}
+
+\subsection{Préparation de l'affichage}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (100,0.0261) (500,0.0628) (1000,0.0692) (2000,0.1477) (5000,0.3058)
+};
+\addlegendentry{\texttt{vector}}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (100,0.0119) (500,0.2594) (1000,0.9664) (2000,6.0623) (5000,50.3267)
+};
+\addlegendentry{\texttt{list}}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (100,0.0102) (500,0.0578) (1000,0.0966) (2000,0.2475) (5000,0.5831)
+};
+\addlegendentry{\texttt{map}}
+\end{axis}
+\end{tikzpicture}
+\caption{Temps médian pour préparer la chaîne d'affichage du tas.}
+\label{fig:affichage}
+\end{figure}
+
 \section{Analyse}
 
 \texttt{vector} est le meilleur choix pour cette représentation du tas : les
@@ -179,6 +350,11 @@ universelles.
 Compiler le programme avec les mêmes options :
 \begin{verbatim}
 g++ -std=c++17 -O2 -Wall -Wextra -pedantic benchmark_heap.cpp -o benchmark_heap.exe
+\end{verbatim}
+
+Pour générer le PDF, utiliser une distribution LaTeX qui inclut PGFPlots :
+\begin{verbatim}
+pdflatex rapport_benchmark.tex
 \end{verbatim}
 
 Lancer \texttt{benchmark\_heap.exe}, choisir l'option 6 et saisir une taille
