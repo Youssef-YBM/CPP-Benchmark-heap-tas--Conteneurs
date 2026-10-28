@@ -1,29 +1,29 @@
 BENCHMARK DES TAS MIN
-Nombre d'elements inseres : 10
+Nombre d'elements inseres : 50
 Les trois structures utilisent les memes valeurs aleatoires.
 Les durees mesurees n'incluent pas l'ecriture de ce fichier.
 
 === Conteneur : vector ===
-Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Tas apres insertion (avant suppressions) : [3, 21, 18, 66, 61, 91, 118, 135, 102, 136, 87, 238, 265, 329, 223, 331, 159, 273, 193, 336, 247, 344, 176, 370, 271, 487, 395, 478, 373, 412, 455, 420, 380, 479, 426, 371, 430, 455, 440, 416, 389, 359, 254, 472, 451, 294, 196, 380, 417, 368]
 Minimum : 3
-Insertion (10 elements) : 0.004 ms
-Recherche (10 requetes, 10 trouvees) : 0.000 ms
-Suppression de tous les elements par minimum : 0.004 ms
-Preparation de l'affichage : 0.041 ms
+Insertion (50 elements) : 0.005 ms
+Recherche (50 requetes, 50 trouvees) : 0.002 ms
+Suppression de tous les elements par minimum : 0.006 ms
+Preparation de l'affichage : 0.058 ms
 
 === Conteneur : list ===
-Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Tas apres insertion (avant suppressions) : [3, 21, 18, 66, 61, 91, 118, 135, 102, 136, 87, 238, 265, 329, 223, 331, 159, 273, 193, 336, 247, 344, 176, 370, 271, 487, 395, 478, 373, 412, 455, 420, 380, 479, 426, 371, 430, 455, 440, 416, 389, 359, 254, 472, 451, 294, 196, 380, 417, 368]
 Minimum : 3
-Insertion (10 elements) : 0.009 ms
-Recherche (10 requetes, 10 trouvees) : 0.001 ms
-Suppression de tous les elements par minimum : 0.005 ms
-Preparation de l'affichage : 0.003 ms
+Insertion (50 elements) : 0.023 ms
+Recherche (50 requetes, 50 trouvees) : 0.017 ms
+Suppression de tous les elements par minimum : 0.015 ms
+Preparation de l'affichage : 0.006 ms
 
 === Conteneur : map ===
-Tas apres insertion (avant suppressions) : [3, 9, 12, 51, 11, 84, 12, 97, 53, 54]
+Tas apres insertion (avant suppressions) : [3, 21, 18, 66, 61, 91, 118, 135, 102, 136, 87, 238, 265, 329, 223, 331, 159, 273, 193, 336, 247, 344, 176, 370, 271, 487, 395, 478, 373, 412, 455, 420, 380, 479, 426, 371, 430, 455, 440, 416, 389, 359, 254, 472, 451, 294, 196, 380, 417, 368]
 Minimum : 3
-Insertion (10 elements) : 0.009 ms
-Recherche (10 requetes, 10 trouvees) : 0.001 ms
-Suppression de tous les elements par minimum : 0.010 ms
-Preparation de l'affichage : 0.003 ms
+Insertion (50 elements) : 0.025 ms
+Recherche (50 requetes, 50 trouvees) : 0.015 ms
+Suppression de tous les elements par minimum : 0.034 ms
+Preparation de l'affichage : 0.008 ms
 
