@@ -66,14 +66,98 @@
   }%
 }
 
-\section{Objectif}
+\section{Présentation de mon programme}
 
-Ce travail compare trois conteneurs C++ --- \texttt{std::vector},
-\texttt{std::list} et \texttt{std::map} --- utilisés comme stockage des
-noeuds d'une même implémentation de tas binaire min. Le minimum est à la
-racine, à l'indice zéro. Les mesures portent sur l'insertion de $N$ valeurs,
-la recherche de valeurs présentes, la suppression répétée du minimum jusqu'à
-vider le tas et la préparation de son affichage sous forme de chaîne.
+Dans ce projet, j'ai réalisé un programme C++ qui implémente un tas binaire
+min et compare son fonctionnement avec trois conteneurs : \texttt{std::vector},
+\texttt{std::list} et \texttt{std::map}. Le menu permet de manipuler les trois
+tas en parallèle et de lancer un benchmark. Les opérations comparées sont
+l'insertion, la recherche, la suppression et l'affichage.
+
+\section{Structure du code}
+
+La logique du tas est définie une seule fois dans le modèle générique
+\texttt{MinHeap<Store>}. Le paramètre \texttt{Store} indique la manière dont
+les valeurs sont rangées. Trois classes adaptatrices, \texttt{VectorStore},
+\texttt{ListStore} et \texttt{MapStore}, fournissent les mêmes opérations de
+base : accès par indice, ajout à la fin, retrait du dernier élément et accès
+à la taille. Ainsi, les trois variantes suivent le même algorithme ; seul le
+conteneur utilisé pour accéder aux valeurs change.
+
+\begin{itemize}
+  \item \texttt{VectorStore} repose sur \texttt{std::vector}, qui accède
+        directement à l'élément demandé par son indice.
+  \item \texttt{ListStore} repose sur \texttt{std::list}. Pour atteindre
+        l'indice demandé, il faut avancer dans les éléments de la liste.
+  \item \texttt{MapStore} repose sur \texttt{std::map}, avec des indices
+        successifs comme clés. L'accès à un indice s'effectue par recherche
+        de cette clé dans l'arbre ordonné de la map.
+\end{itemize}
+
+\section{Logique du tas min}
+
+Le tas est un arbre binaire complet représenté par un tableau logique. Sa
+racine, à l'indice zéro, contient la plus petite valeur. Pour un élément
+d'indice $i$, l'indice de son parent est
+$\left\lfloor(i-1)/2\right\rfloor$ et ceux de ses enfants sont $2i+1$ et
+$2i+2$. La règle à maintenir après chaque modification est que la valeur d'un
+parent est inférieure ou égale à celles de ses enfants.
+
+\subsection{Insertion et réorganisation vers le haut}
+
+La fonction \texttt{insert} ajoute la nouvelle valeur à la fin du stockage.
+La fonction \texttt{siftUp} la compare ensuite à son parent. Si elle est plus
+petite, les deux valeurs sont échangées et la comparaison continue vers la
+racine. Le déplacement s'arrête dès que la propriété du tas est rétablie.
+Cette opération maintient la racine comme minimum, sans devoir trier toutes
+les valeurs.
+
+\subsection{Recherche}
+
+La fonction \texttt{contains} parcourt les éléments et s'arrête dès qu'elle
+trouve la valeur recherchée. Une recherche peut donc examiner une partie ou
+la totalité du tas. Le tas ordonne seulement les relations parent-enfants :
+il ne garantit pas que toutes les valeurs soient triées de gauche à droite.
+On ne peut donc pas appliquer à cette recherche les règles d'un arbre de
+recherche binaire.
+
+\subsection{Suppression et réorganisation}
+
+Pour supprimer une valeur donnée, \texttt{erase} la recherche dans le tas.
+Une fois l'indice trouvé, \texttt{eraseAt} remplace cette valeur par le
+dernier élément, puis retire la dernière case. Selon la valeur déplacée, le
+tas est réorganisé vers le haut avec \texttt{siftUp}, ou vers le bas avec
+\texttt{siftDown}. Pour supprimer le minimum, \texttt{removeMinimum} applique
+la même procédure à l'indice zéro. Après le remplacement de la racine,
+\texttt{siftDown} échange l'élément avec son plus petit enfant jusqu'au
+rétablissement de la propriété du tas.
+
+\subsection{Affichage}
+
+La méthode \texttt{toString} parcourt les indices du stockage et construit
+une chaîne contenant les valeurs dans leur ordre interne au tas. Cet ordre
+montre l'arbre dans sa représentation par tableau, mais ne correspond pas à
+un tri complet. L'option correspondante du menu écrit les trois chaînes dans
+\texttt{output.txt}.
+
+\section{Menu et fonctionnement du benchmark}
+
+Le menu conserve un tas distinct pour chaque conteneur. Lors d'une insertion,
+d'une recherche ou d'une suppression par valeur, la même valeur et la même
+opération sont appliquées aux trois structures. Le menu permet également de
+retirer le minimum, d'enregistrer l'affichage dans \texttt{output.txt}, de
+lancer le benchmark ou de quitter le programme.
+
+Pour un benchmark, le programme génère une série de valeurs aléatoires puis
+construit chaque variante avec cette même série. Il mesure séparément le
+temps d'insertion, la recherche d'au plus 20 valeurs déjà insérées, la
+suppression successive des minimums jusqu'à vider le tas et la création de
+la chaîne d'affichage. Les mesures sont ensuite affichées dans la console et
+enregistrées dans \texttt{output.txt}.
+
+Dans les résultats qui suivent, $N$ désigne le nombre de valeurs insérées.
+Les tableaux et les graphiques présentent les médianes de cinq exécutions,
+en millisecondes.
 
 \section{Environnement de test}
 
@@ -90,26 +174,6 @@ vider le tas et la préparation de son affichage sous forme de chaîne.
   \item Compilateur : g++ 16.2.0 (MSYS2), avec les options
         \texttt{-std=c++17 -O2 -Wall -Wextra -pedantic}.
 \end{itemize}
-
-\section{Protocole}
-
-Les tailles testées sont $N \in \{100, 500, 1000, 2000, 5000\}$. Chaque
-taille a été mesurée cinq fois. À l'intérieur d'un essai, les trois
-implémentations reçoivent exactement les mêmes valeurs aléatoires. Les valeurs
-sont régénérées à chaque essai, mais l'ordre des conteneurs est fixe :
-\texttt{vector}, puis \texttt{list}, puis \texttt{map}. Les tableaux
-\ref{tab:insertion} à \ref{tab:affichage} présentent les médianes des cinq
-mesures, en millisecondes. Les fichiers CSV conservent les temps de chaque
-essai ainsi que les médianes et les valeurs minimales et maximales.
-
-Pour la recherche, le programme effectue jusqu'à 20 requêtes réussies choisies
-parmi les valeurs insérées. Le nombre de requêtes est donc égal à
-$\min(N,20)$. La suppression chronométrée vide le tas en retirant
-systématiquement son minimum ; elle ne mesure pas la suppression d'une valeur
-arbitraire. Le temps d'affichage correspond à la construction de la chaîne
-représentant le tas et n'inclut ni l'ouverture du fichier ni l'écriture sur le
-disque. Les opérations de génération des données et les opérations hors de la
-phase mesurée ne sont pas incluses dans les chronométrages.
 
 \section{Résultats}
 
@@ -318,62 +382,40 @@ médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
 
 \section{Analyse}
 
-\texttt{vector} est le meilleur choix pour cette représentation du tas : les
-noeuds d'un arbre binaire sont repérés par des indices (parent
-$\lfloor(i-1)/2\rfloor$, enfants $2i+1$ et $2i+2$), et \texttt{vector}
-fournit un accès direct par indice. Pour $N=5000$, son temps médian est de
-\SI{0.1252}{ms} pour l'insertion, \SI{0.0193}{ms} pour les recherches
-mesurées, \SI{0.4514}{ms} pour vider le tas et \SI{0.3058}{ms} pour préparer
-l'affichage.
+Les résultats suivent directement la façon dont le tas utilise son stockage.
+Pour rétablir l'ordre, \texttt{siftUp} et \texttt{siftDown} accèdent à un
+élément, à son parent et à ses enfants par leurs indices. Avec
+\texttt{std::vector}, ces accès sont directs ; c'est pourquoi cette variante
+obtient les meilleurs temps pour l'insertion, la recherche et la suppression
+du minimum. Pour $N=5000$, elle met \SI{0.1252}{ms} à insérer les valeurs,
+\SI{0.0193}{ms} à effectuer les recherches mesurées et \SI{0.4514}{ms} à vider
+le tas.
 
-\texttt{map} est plus lent que \texttt{vector}, car chaque accès par indice
-recherche une clé dans une structure ordonnée. Il reste toutefois bien plus
-rapide que \texttt{list} pour les opérations du tas dans cette implémentation.
-L'accès à l'élément d'indice $i$ dans une liste nécessite de parcourir ses
-noeuds ; cette représentation est donc mal adaptée aux échanges entre parent
-et enfants. À $N=5000$, les recherches chronométrées sur \texttt{list}
-prennent environ 18\,700 fois plus de temps que sur \texttt{vector}. Ce
-résultat reflète le coût combiné de l'algorithme de recherche linéaire et des
-accès répétés par indice dans une liste chaînée.
+Dans \texttt{ListStore}, l'accès à un indice avance depuis le début de la
+liste. Comme les opérations du tas font de nombreux accès indexés, ce coût se
+répète pendant les échanges et les comparaisons. La recherche d'une valeur
+parcourt également le tas : avec $N=5000$, les recherches mesurées sur
+\texttt{list} prennent \SI{361.2346}{ms}, contre \SI{0.0193}{ms} sur
+\texttt{vector}. La \texttt{map} est intermédiaire : ses clés permettent de
+retrouver un indice dans un arbre ordonné, mais chaque accès demande une
+recherche de clé au lieu d'un accès direct.
 
-Les durées sont très courtes pour les petits $N$ et peuvent varier avec la
-charge de la machine, la fréquence du processeur et le système d'exploitation.
-L'ordre fixe des conteneurs peut également introduire un biais lié à la charge
-ou à la température du processeur. Par exemple, pour la recherche sur
-\texttt{list} avec $N=5000$, les cinq temps vont d'environ
-\SI{182.9639}{ms} à \SI{399.694}{ms}. Les valeurs sont donc présentées comme
-des mesures observées dans cet environnement, et non comme des constantes
-universelles.
-
-\section{Reproductibilité}
-
-Compiler le programme avec les mêmes options :
-\begin{verbatim}
-g++ -std=c++17 -O2 -Wall -Wextra -pedantic benchmark_heap.cpp -o benchmark_heap.exe
-\end{verbatim}
-
-Pour générer le PDF, utiliser une distribution LaTeX qui inclut PGFPlots :
-\begin{verbatim}
-pdflatex rapport_benchmark.tex
-\end{verbatim}
-
-Lancer \texttt{benchmark\_heap.exe}, choisir l'option 6 et saisir une taille
-$N$. Pour reproduire les tableaux, répéter le test cinq fois pour chacune des
-tailles 100, 500, 1000, 2000 et 5000. Le fichier
-\texttt{benchmark\_mesures\_brutes.csv} contient les essais de cette campagne ;
-\texttt{benchmark\_resultats.csv} contient leurs médianes et leurs étendues.
-Les tirages aléatoires étant renouvelés, une nouvelle campagne produira des
-valeurs légèrement différentes.
+L'affichage illustre également le coût d'accès. La méthode
+\texttt{toString} parcourt les indices du tas ; elle bénéficie donc du
+vecteur, tandis que les accès répétés pénalisent la liste. Au total, le choix
+du conteneur ne modifie pas les règles du tas implémentées dans
+\texttt{MinHeap}, mais il modifie fortement le coût d'exécution de ces règles.
 
 \section{Conclusion}
 
-Pour un tas binaire min stocké sous forme de tableau, \texttt{std::vector}
-est le conteneur recommandé parmi les trois testés. \texttt{std::map} peut
-servir de comparaison, mais son accès indexé ajoute un coût sans avantage
-particulier pour la structure du tas. \texttt{std::list} est à éviter ici,
-car le tas a besoin d'accéder rapidement à des positions calculées par indice.
-Cette expérience compare les conteneurs utilisés par une même implémentation
-de tas ; elle ne compare pas les performances à celles d'une file de priorité
-standard ni celles d'un arbre binaire de recherche.
+Ce projet m'a permis de mettre en pratique l'implémentation d'un tas min et
+de comparer l'effet du conteneur sur les opérations. Les résultats montrent
+que \texttt{std::vector} convient le mieux à cette logique : le tas calcule
+en permanence les indices des parents et des enfants, et le vecteur donne un
+accès direct à ces positions. La \texttt{std::map} peut conserver des éléments
+repérés par indice, mais chaque accès demande une recherche dans la structure.
+La \texttt{std::list} est la moins adaptée, car atteindre une position
+particulière demande de parcourir la liste. Le choix du conteneur doit donc
+correspondre à la manière dont l'algorithme accède aux données.
 
 \end{document}
