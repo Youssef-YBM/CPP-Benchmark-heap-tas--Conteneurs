@@ -1,0 +1,30 @@
+TP8 - Benchmark des tas min en C++
+==================================
+
+Fichier source : benchmark_heap.cpp
+Fichier de resultats : output.txt (cree automatiquement dans le dossier courant)
+
+Compilation avec MinGW / g++ :
+    g++ -std=c++17 -O2 -Wall -Wextra -pedantic benchmark_heap.cpp -o benchmark_heap.exe
+
+Execution dans PowerShell :
+    .\benchmark_heap.exe
+
+Execution depuis l'invite de commandes Windows :
+    benchmark_heap.exe
+
+Fonctionnement :
+- Le menu insere, recherche ou supprime une valeur dans les trois tas.
+- Le choix 4 supprime le minimum de chaque tas.
+- Le choix 5 ecrit les tas courants dans output.txt.
+- Le choix 6 demande N, genere N valeurs aleatoires identiques pour les trois
+  implementations et mesure insertion, recherche, suppression de tous les
+  elements par minimum et preparation de l'affichage.
+- Les resultats du benchmark remplacent le contenu precedent de output.txt.
+- N doit etre compris entre 0 et 200000.
+
+Remarque :
+Les trois variantes stockent les noeuds d'un tas binaire dans un tableau logique
+indexe. vector donne un acces direct, tandis que list et map ont des couts
+d'acces differents. Ce programme compare donc les couts de ces conteneurs dans
+la meme implementation de tas ; il ne s'agit pas d'un arbre de recherche binaire.

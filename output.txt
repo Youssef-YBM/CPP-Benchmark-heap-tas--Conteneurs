@@ -1,0 +1,7 @@
+Affichage des tas min (ordre interne du tableau du tas)
+
+vector : [8]
+list : [8]
+map : [8]
+
+La racine de chaque tas est son element minimum.
