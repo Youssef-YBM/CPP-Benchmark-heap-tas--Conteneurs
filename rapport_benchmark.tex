@@ -29,7 +29,7 @@
   {\thesubsection}{0.7em}{}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{bleufonce}Benchmark des tas min}
+\fancyhead[L]{\small\color{bleufonce}Benchmark des tas min et max}
 \fancyhead[R]{\small\color{bleufonce}ERRAMI Youssef}
 \fancyfoot[C]{\color{bleufonce}\thepage}
 \setlength{\headheight}{15pt}
@@ -39,7 +39,7 @@
   group-minimum-digits = 4
 }
 
-\title{Comparaison de conteneurs pour l'implémentation d'un tas min}
+\title{Comparaison des tas min et max}
 \author{ERRAMI Youssef}
 \date{30 octobre 2026}
 
@@ -47,9 +47,8 @@
 \begin{center}
   {\color{bleuclair}\rule{\textwidth}{1.2pt}}\\[0.8em]
   {\Huge\bfseries\color{bleufonce}
-    Comparaison de conteneurs\\[0.2em]
-    pour un tas min}\\[0.6em]
-  {\Large\color{bleuclair}Comparaison des performances en C++}\\[1.2em]
+    Comparaison des tas min et max}\\[0.6em]
+  {\Large\color{bleuclair}Performances d'insertion et d'extraction en C++}\\[1.2em]
   {\large\bfseries ERRAMI Youssef}\\[0.3em]
   {\color{bleufonce}30 octobre 2026}\\[0.8em]
   {\color{bleuclair}\rule{\textwidth}{1.2pt}}
@@ -60,93 +59,122 @@
 \colorbox{grisclair}{%
   \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
     \textcolor{bleufonce}{\textbf{Comparaison.}}
-    Comparaison des temps d'insertion et d'extraction du minimum pour les tas
-    maison (\texttt{vector}, \texttt{list}, \texttt{map}) et le tas STL sur
-    \texttt{vector}.%
+    Tas maison sur \texttt{vector}, \texttt{list} et \texttt{map}, comparés
+    aux algorithmes STL sur \texttt{vector}, pour les tas min et max.%
   }%
 }
 
-\section{Environnement de test}
-
+\section{Ordinateur}
 \begin{itemize}
-  \item Ordinateur : MSI Stealth GS66 12UGS.
-  \item Processeur : Intel Core i7-12700H, 14 coeurs.
-  \item Carte graphique : NVIDIA GeForce RTX 3070 Ti.
-  \item Mémoire vive : 16 Go DDR5.
+  \item MSI Stealth GS66 12UGS.
+  \item Intel Core i7-12700H, 14 coeurs.
+  \item NVIDIA GeForce RTX 3070 Ti.
+  \item 16 Go de mémoire DDR5.
 \end{itemize}
 
 \section{Résultats}
 
-Les trois tas maison utilisent respectivement \texttt{vector}, \texttt{list}
-et \texttt{map}. Le quatrième utilise les algorithmes STL
-(\texttt{push\_heap}, \texttt{pop\_heap}) avec \texttt{vector}. Les temps sont
-en millisecondes : médiane de cinq exécutions jusqu'à $N=5\,000$ et de onze
-exécutions à $N=1\,000\,000$. À un million, seuls les deux tas sur
-\texttt{vector} sont mesurés ; \texttt{list} et \texttt{map} sont limités à
-$N\leq 5\,000$.
+Les temps sont exprimés en millisecondes et correspondent à la médiane de
+cinq exécutions. L'extraction mesure le retrait successif des $N$ racines,
+jusqu'à vider le tas. Les mêmes valeurs aléatoires sont utilisées pour les
+implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
+\texttt{vector} sont mesurées ; les tas indexés sur \texttt{list} et
+\texttt{map} sont limités à $N\leq 5\,000$.
 
-\subsection{Insertion}
+\subsection{Tas min}
 
 \begin{table}[htbp]
 \centering
-\caption{Temps médian d'insertion (ms)}
-\label{tab:insertion}
+\caption{Tas min : temps médian d'insertion (ms)}
 \small
 \begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.005800 & 0.028000 & 0.034200 & 0.004700 \\
-500  & 0.014400 & 0.539200 & 0.153800 & 0.013700 \\
-1000 & 0.025100 & 2.351200 & 0.405000 & 0.022800 \\
-2000 & 0.041300 & 10.930200 & 0.724400 & 0.047000 \\
-5000 & 0.106400 & 94.656600 & 1.524400 & 0.101200 \\
-1000000 & 13.937200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 13.774500 \\
+100     & 0.002200 & 0.034200 & 0.036000 & 0.001500 \\
+500     & 0.009200 & 0.499600 & 0.199000 & 0.006900 \\
+1000    & 0.019000 & 2.427200 & 0.349400 & 0.014700 \\
+2000    & 0.031200 & 10.451100 & 0.633900 & 0.025300 \\
+5000    & 0.072900 & 84.862000 & 1.601300 & 0.061000 \\
+1000000 & 13.329400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 11.952600 \\
 \bottomrule
 \end{tabular}
-\normalsize
 \end{table}
-
-\subsection{Extraction du minimum}
 
 \begin{table}[htbp]
 \centering
-\caption{Temps médian pour extraire les $N$ minimums jusqu'à vider le tas (ms)}
-\label{tab:extraction}
+\caption{Tas min : temps médian d'extraction des $N$ minimums (ms)}
 \small
 \begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.004600 & 0.032500 & 0.050700 & 0.002500 \\
-500  & 0.025400 & 0.903500 & 0.353700 & 0.013100 \\
-1000 & 0.062700 & 4.425300 & 0.912300 & 0.023700 \\
-2000 & 0.128400 & 21.920600 & 2.367300 & 0.043000 \\
-5000 & 0.357400 & 176.770500 & 8.665400 & 0.119700 \\
-1000000 & 115.748400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 96.320900 \\
+100     & 0.006100 & 0.027600 & 0.043100 & 0.002300 \\
+500     & 0.027200 & 0.933400 & 0.340900 & 0.013600 \\
+1000    & 0.061700 & 4.353200 & 0.855100 & 0.029200 \\
+2000    & 0.124900 & 18.637500 & 2.187900 & 0.051100 \\
+5000    & 0.328600 & 164.322600 & 7.136000 & 0.137000 \\
+1000000 & 196.609300 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 224.042300 \\
 \bottomrule
 \end{tabular}
-\normalsize
 \end{table}
 
-\section{Visualisation graphique}
+\subsection{Tas max}
 
-Chaque graphique compare les quatre implémentations pour une même opération.
-Les tailles $N$ sont espacées régulièrement comme des catégories, afin de
-garder lisibles les cas de 100 à 1\,000\,000 éléments. L'axe du temps est
-logarithmique.
+\begin{table}[htbp]
+\centering
+\caption{Tas max : temps médian d'insertion (ms)}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
+\midrule
+100     & 0.001500 & 0.018400 & 0.023200 & 0.001600 \\
+500     & 0.007100 & 0.508900 & 0.133100 & 0.006800 \\
+1000    & 0.013000 & 1.986900 & 0.312800 & 0.012700 \\
+2000    & 0.025400 & 9.498000 & 0.589800 & 0.025500 \\
+5000    & 0.063200 & 98.962800 & 1.483000 & 0.060200 \\
+1000000 & 12.620200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 12.064200 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Tas max : temps médian d'extraction des $N$ maximums (ms)}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\toprule
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
+\midrule
+100     & 0.003900 & 0.026700 & 0.041200 & 0.002400 \\
+500     & 0.026800 & 0.890000 & 0.313400 & 0.013500 \\
+1000    & 0.052500 & 4.029200 & 0.908500 & 0.022800 \\
+2000    & 0.113700 & 18.773400 & 2.196400 & 0.056500 \\
+5000    & 0.308800 & 170.574900 & 7.886300 & 0.125600 \\
+1000000 & 161.764400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 158.403400 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\clearpage
+\section{Graphiques}
+
+Les tailles sont espacées régulièrement sur l'axe horizontal pour rester
+lisibles. L'axe vertical logarithmique permet de comparer les temps très
+différents, notamment ceux de \texttt{list} et \texttt{vector}.
 
 \pgfplotsset{
   benchmark axis/.style={
     width=0.92\textwidth,
-    height=6.2cm,
+    height=6.0cm,
     xmode=linear,
     ymode=log,
     xmin=0.7,
     xmax=6.3,
     xtick={1,2,3,4,5,6},
     xticklabels={100,500,1k,2k,5k,1M},
-    xlabel={Nombre d'éléments $N$ (échelle catégorielle)},
+    xlabel={Nombre d'éléments $N$},
     ylabel={Temps médian (ms)},
     grid=both,
     major grid style={gray!30},
@@ -161,79 +189,94 @@ logarithmique.
       font=\small
     },
     line width=1.1pt,
-    mark size=2.5pt
+    mark size=2.3pt
   }
 }
 
-\subsection{Insertion}
+\subsection{Tas min : insertion}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {
-  (1,0.0058) (2,0.0144) (3,0.0251) (4,0.0413) (5,0.1064)
-  (6,13.9372)
-};
-\addlegendentry{\texttt{maison/vector}}
-\addplot[color=turquoise,mark=square*] coordinates {
-  (1,0.0280) (2,0.5392) (3,2.3512) (4,10.9302) (5,94.6566)
-};
-\addlegendentry{\texttt{maison/list}}
-\addplot[color=orange,mark=triangle*] coordinates {
-  (1,0.0342) (2,0.1538) (3,0.4050) (4,0.7244) (5,1.5244)
-};
-\addlegendentry{\texttt{maison/map}}
-\addplot[color=violet,mark=diamond*] coordinates {
-  (1,0.0047) (2,0.0137) (3,0.0228) (4,0.0470) (5,0.1012)
-  (6,13.7745)
-};
-\addlegendentry{\texttt{STL vector}}
+\addplot[color=bleufonce,mark=*] coordinates {(1,0.0022) (2,0.0092) (3,0.0190) (4,0.0312) (5,0.0729) (6,13.3294)};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {(1,0.0342) (2,0.4996) (3,2.4272) (4,10.4511) (5,84.8620)};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {(1,0.0360) (2,0.1990) (3,0.3494) (4,0.6339) (5,1.6013)};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {(1,0.0015) (2,0.0069) (3,0.0147) (4,0.0253) (5,0.0610) (6,11.9526)};
+\addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
-\caption{Temps médian d'insertion de $N$ éléments.}
-\label{fig:insertion}
+\caption{Insertion dans les tas min.}
 \end{figure}
 
-\subsection{Extraction du minimum}
+\subsection{Tas min : extraction}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {
-  (1,0.0046) (2,0.0254) (3,0.0627) (4,0.1284) (5,0.3574)
-  (6,115.7484)
-};
-\addlegendentry{\texttt{maison/vector}}
-\addplot[color=turquoise,mark=square*] coordinates {
-  (1,0.0325) (2,0.9035) (3,4.4253) (4,21.9206) (5,176.7705)
-};
-\addlegendentry{\texttt{maison/list}}
-\addplot[color=orange,mark=triangle*] coordinates {
-  (1,0.0507) (2,0.3537) (3,0.9123) (4,2.3673) (5,8.6654)
-};
-\addlegendentry{\texttt{maison/map}}
-\addplot[color=violet,mark=diamond*] coordinates {
-  (1,0.0025) (2,0.0131) (3,0.0237) (4,0.0430) (5,0.1197)
-  (6,96.3209)
-};
-\addlegendentry{\texttt{STL vector}}
+\addplot[color=bleufonce,mark=*] coordinates {(1,0.0061) (2,0.0272) (3,0.0617) (4,0.1249) (5,0.3286) (6,196.6093)};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {(1,0.0276) (2,0.9334) (3,4.3532) (4,18.6375) (5,164.3226)};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {(1,0.0431) (2,0.3409) (3,0.8551) (4,2.1879) (5,7.1360)};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {(1,0.0023) (2,0.0136) (3,0.0292) (4,0.0511) (5,0.1370) (6,224.0423)};
+\addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
-\caption{Temps médian d'extraction des $N$ minimums.}
-\label{fig:extraction}
+\caption{Extraction des minimums jusqu'à vider le tas min.}
+\end{figure}
+
+\subsection{Tas max : insertion}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {(1,0.0015) (2,0.0071) (3,0.0130) (4,0.0254) (5,0.0632) (6,12.6202)};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {(1,0.0184) (2,0.5089) (3,1.9869) (4,9.4980) (5,98.9628)};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {(1,0.0232) (2,0.1331) (3,0.3128) (4,0.5898) (5,1.4830)};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {(1,0.0016) (2,0.0068) (3,0.0127) (4,0.0255) (5,0.0602) (6,12.0642)};
+\addlegendentry{STL/vector}
+\end{axis}
+\end{tikzpicture}
+\caption{Insertion dans les tas max.}
+\end{figure}
+
+\subsection{Tas max : extraction}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {(1,0.0039) (2,0.0268) (3,0.0525) (4,0.1137) (5,0.3088) (6,161.7644)};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {(1,0.0267) (2,0.8900) (3,4.0292) (4,18.7734) (5,170.5749)};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {(1,0.0412) (2,0.3134) (3,0.9085) (4,2.1964) (5,7.8863)};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {(1,0.0024) (2,0.0135) (3,0.0228) (4,0.0565) (5,0.1256) (6,158.4034)};
+\addlegendentry{STL/vector}
+\end{axis}
+\end{tikzpicture}
+\caption{Extraction des maximums jusqu'à vider le tas max.}
 \end{figure}
 
 \section{Comparaison}
 
-À $N=1\,000\,000$, l'insertion prend \SI{13.7745}{ms} avec la STL et
-\SI{13.9372}{ms} avec le tas maison sur \texttt{vector}. L'extraction des
-un million de minimums prend respectivement \SI{96.3209}{ms} et
-\SI{115.7484}{ms}, soit environ \SI{0.0963}{\micro\second} et
-\SI{0.1157}{\micro\second} par extraction. Les implémentations sur
-\texttt{list} et \texttt{map} ne sont pas exécutées à cette taille.
+À un million d'éléments, la STL est légèrement plus rapide à l'insertion :
+\SI{11.9526}{ms} pour le tas min et \SI{12.0642}{ms} pour le tas max. Pour
+l'extraction complète, le tas maison/vector est plus rapide sur le tas min
+(\SI{196.6093}{ms}), tandis que la STL est plus rapide sur le tas max
+(\SI{158.4034}{ms}). Les variantes \texttt{list} et \texttt{map} sont
+nettement plus lentes sur les tailles testées.
 
-L'extraction indiquée est le temps total pour retirer les $N$ minimums,
-et non le temps d'un seul retrait. Les temps moyens par retrait sont fournis
-dans les résultats CSV.
+Le programme accepte une saisie jusqu'à $10^9$ éléments, mais vérifie la
+mémoire disponible avant de lancer le benchmark. Les mesures de ce rapport
+vont jusqu'à un million d'éléments ; un test à un milliard n'a pas été exécuté
+car la mémoire libre vérifiée ne le permettait pas.
 
 \end{document}

@@ -1,47 +1,27 @@
 BENCHMARK DES TAS MIN ET MAX
-Nombre d'elements inseres : 1000
+Nombre d'elements inseres : 1000000
 Comparaison de l'insertion et de l'extraction de la racine.
 Les tas de chaque type utilisent les memes valeurs aleatoires.
 Les temps n'incluent ni la generation des valeurs ni ce fichier.
 Les tas maison sur list et map sont limites a 5000 elements.
 
 === Tas min - Maison / vector ===
-Insertion (1000 elements) : 0.018000 ms
-Extraction de toutes les racines (1000 extractions) : 0.051900 ms
-Temps moyen par extraction : 0.051900 us
+Insertion (1000000 elements) : 11.371700 ms
+Extraction de toutes les racines (1000000 extractions) : 113.315600 ms
+Temps moyen par extraction : 0.113316 us
 
 === Tas min - STL / vector ===
-Insertion (1000 elements) : 0.013300 ms
-Extraction de toutes les racines (1000 extractions) : 0.022300 ms
-Temps moyen par extraction : 0.022300 us
+Insertion (1000000 elements) : 10.674800 ms
+Extraction de toutes les racines (1000000 extractions) : 71.857000 ms
+Temps moyen par extraction : 0.071857 us
 
 === Tas max - Maison / vector ===
-Insertion (1000 elements) : 0.012600 ms
-Extraction de toutes les racines (1000 extractions) : 0.108300 ms
-Temps moyen par extraction : 0.108300 us
+Insertion (1000000 elements) : 11.778200 ms
+Extraction de toutes les racines (1000000 extractions) : 112.146800 ms
+Temps moyen par extraction : 0.112147 us
 
 === Tas max - STL / vector ===
-Insertion (1000 elements) : 0.012700 ms
-Extraction de toutes les racines (1000 extractions) : 0.023700 ms
-Temps moyen par extraction : 0.023700 us
-
-=== Tas min - Maison / list ===
-Insertion (1000 elements) : 2.030700 ms
-Extraction de toutes les racines (1000 extractions) : 3.728300 ms
-Temps moyen par extraction : 3.728300 us
-
-=== Tas min - Maison / map ===
-Insertion (1000 elements) : 0.488500 ms
-Extraction de toutes les racines (1000 extractions) : 1.009900 ms
-Temps moyen par extraction : 1.009900 us
-
-=== Tas max - Maison / list ===
-Insertion (1000 elements) : 2.163600 ms
-Extraction de toutes les racines (1000 extractions) : 3.843300 ms
-Temps moyen par extraction : 3.843300 us
-
-=== Tas max - Maison / map ===
-Insertion (1000 elements) : 0.309000 ms
-Extraction de toutes les racines (1000 extractions) : 0.776500 ms
-Temps moyen par extraction : 0.776500 us
+Insertion (1000000 elements) : 10.917300 ms
+Extraction de toutes les racines (1000000 extractions) : 74.836500 ms
+Temps moyen par extraction : 0.074837 us
 

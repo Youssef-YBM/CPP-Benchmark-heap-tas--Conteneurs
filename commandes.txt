@@ -1,8 +1,10 @@
-TP8 - Benchmark des tas min en C++
-==================================
+TP8 - Benchmark des tas min et max en C++
+========================================
 
 Fichier source : benchmark_heap.cpp
 Fichier de resultats : output.txt (cree automatiquement dans le dossier courant)
+Rapport : rapport_benchmark.tex
+Mesures : benchmark_mesures_brutes.csv et benchmark_resultats.csv
 
 Compilation avec MinGW / g++ :
     g++ -std=c++17 -O2 -Wall -Wextra -pedantic benchmark_heap.cpp -o benchmark_heap.exe
@@ -13,23 +15,27 @@ Execution dans PowerShell :
 Execution depuis l'invite de commandes Windows :
     benchmark_heap.exe
 
-Fonctionnement :
-- Le programme compare quatre tas min : implementation maison sur vector,
-  list et map, et implementation STL sur vector avec push_heap, pop_heap et
-  make_heap.
-- Le menu insere, recherche ou supprime une valeur dans les quatre tas.
-- Le choix 4 supprime le minimum de chaque tas.
-- Le choix 5 ecrit les tas courants dans output.txt.
-- Le choix 6 demande N, genere N valeurs aleatoires identiques et mesure
-  uniquement l'insertion et l'extraction de tous les minimums.
-- Jusqu'a 5000 elements, le benchmark mesure les quatre variantes. Au-dela,
-  il mesure seulement les tas maison/vector et STL/vector.
-- Les resultats du benchmark remplacent le contenu precedent de output.txt.
-- N doit etre compris entre 0 et 1000000. Les variantes list et map sont
-  ignorees au-dela de 5000 elements en raison du cout de leurs acces par indice.
+Menu :
+- Les choix 1 a 3 inserent, recherchent ou suppriment une valeur dans les huit tas :
+  tas min et max maison sur vector, list et map, et tas STL sur vector.
+- Le choix 4 extrait simultanement le minimum et le maximum.
+- Le choix 5 ecrit les huit tas dans output.txt.
+- Le choix 6 compare l'insertion et l'extraction complete avec les memes valeurs
+  aleatoires pour les implementations d'un meme essai.
 
-Remarque :
-La variante STL utilise les algorithmes de tas de la bibliotheque standard sur
-un vector. Les recherches et suppressions interactives par valeur sont ajoutees
-pour offrir les memes operations dans le menu. L'extraction du benchmark est
-le retrait repete du minimum jusqu'a vider le tas.
+Benchmark :
+- La saisie accepte N entre 0 et 1000000000 (10^9).
+- Le programme controle la memoire physique disponible avant l'allocation.
+  Il estime environ 2 * N * sizeof(int), plus une marge de 512 Mio. Une saisie
+  autorisee ne garantit donc pas que le test soit executable sur l'ordinateur.
+- Les tas vector maison et STL sont testes pour toutes les tailles.
+- Les tas maison sur list et map sont ajoutes seulement si N <= 5000, car
+  l'acces indexe est couteux pour ces conteneurs.
+- Les temps d'insertion incluent la reservation de capacite du vector.
+  La generation aleatoire et l'ecriture du fichier ne sont pas chronometrees.
+- L'extraction mesure le retrait de toutes les racines jusqu'a vider le tas.
+- Le benchmark remplace le contenu precedent de output.txt.
+
+Le rapport LaTeX fournit les tableaux et graphiques des mesures effectuees
+jusqu'a un million d'elements. Pour compiler le rapport, utiliser une
+installation LaTeX comprenant pdflatex et PGFPlots.

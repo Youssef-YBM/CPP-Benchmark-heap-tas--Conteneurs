@@ -8,6 +8,7 @@
 #include <list>
 #include <limits>
 #include <map>
+#include <new>
 #include <random>
 #include <sstream>
 #include <stdexcept>
@@ -103,9 +104,6 @@ public:
         return values.at(0);
     }
 
-    int minimum() const { return top(); }
-    int maximum() const { return top(); }
-
     bool contains(int value) const {
         for (std::size_t i = 0; i < values.size(); ++i) {
             if (values.at(i) == value) {
@@ -130,9 +128,6 @@ public:
         eraseAt(0);
         return result;
     }
-
-    int removeMinimum() { return extractTop(); }
-    int removeMaximum() { return extractTop(); }
 
     std::string toString() const {
         std::ostringstream output;
@@ -233,9 +228,6 @@ public:
         return values.front();
     }
 
-    int minimum() const { return top(); }
-    int maximum() const { return top(); }
-
     bool contains(int value) const {
         return std::find(values.begin(), values.end(), value) != values.end();
     }
@@ -256,9 +248,6 @@ public:
         values.pop_back();
         return result;
     }
-
-    int removeMinimum() { return extractTop(); }
-    int removeMaximum() { return extractTop(); }
 
     std::string toString() const {
         std::ostringstream output;
@@ -484,14 +473,14 @@ void runInteractiveMenu() {
                 std::cout << "Les tas sont vides : aucune racine a extraire.\n";
                 continue;
             }
-            std::cout << "Minimums extraits : vector=" << vectorHeap.removeMinimum()
-                      << ", list=" << listHeap.removeMinimum()
-                      << ", map=" << mapHeap.removeMinimum()
-                      << ", STL=" << stlHeap.removeMinimum() << '\n'
-                      << "Maximums extraits : vector=" << maxVectorHeap.removeMaximum()
-                      << ", list=" << maxListHeap.removeMaximum()
-                      << ", map=" << maxMapHeap.removeMaximum()
-                      << ", STL=" << stlMaxHeap.removeMaximum() << '\n';
+            std::cout << "Minimums extraits : vector=" << vectorHeap.extractTop()
+                      << ", list=" << listHeap.extractTop()
+                      << ", map=" << mapHeap.extractTop()
+                      << ", STL=" << stlHeap.extractTop() << '\n'
+                      << "Maximums extraits : vector=" << maxVectorHeap.extractTop()
+                      << ", list=" << maxListHeap.extractTop()
+                      << ", map=" << maxMapHeap.extractTop()
+                      << ", STL=" << stlMaxHeap.extractTop() << '\n';
         } else if (choice == 5) {
             saveInteractiveHeaps(
                 vectorHeap, listHeap, mapHeap, stlHeap,
@@ -515,44 +504,49 @@ void runInteractiveMenu() {
                 continue;
             }
 
-            std::mt19937 generator(std::random_device{}());
-            std::uniform_int_distribution<int> distribution(
-                1, std::numeric_limits<int>::max());
+            try {
+                std::mt19937 generator(std::random_device{}());
+                std::uniform_int_distribution<int> distribution(
+                    1, std::numeric_limits<int>::max());
 
-            std::vector<int> values;
-            values.reserve(count);
-            for (std::size_t i = 0; i < count; ++i) {
-                values.push_back(distribution(generator));
-            }
-
-            std::vector<BenchmarkResult> results;
-            results.push_back(runBenchmark<HeapVector>("Maison / vector", "min", values));
-            results.push_back(runBenchmark<STLMinHeap>("STL / vector", "min", values));
-            results.push_back(runBenchmark<HeapMaxVector>("Maison / vector", "max", values));
-            results.push_back(runBenchmark<STLMaxHeap>("STL / vector", "max", values));
-            if (count <= 5000) {
-                results.push_back(runBenchmark<HeapList>("Maison / list", "min", values));
-                results.push_back(runBenchmark<HeapMap>("Maison / map", "min", values));
-                results.push_back(runBenchmark<HeapMaxList>("Maison / list", "max", values));
-                results.push_back(runBenchmark<HeapMaxMap>("Maison / map", "max", values));
-            } else {
-                std::cout << "Pour N > 5000, list et map sont ignores : "
-                             "leur acces indexe rend le tas trop lent.\n";
-            }
-            saveBenchmarkResults(count, results);
-
-            std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
-                      << std::fixed << std::setprecision(6);
-            for (const BenchmarkResult& result : results) {
-                std::cout << "Tas " << result.heapType << " - " << result.containerName
-                          << " : insertion " << result.insertionMs
-                          << " ms, extraction des " << count << " racines "
-                          << result.extractionMs << " ms";
-                if (count != 0) {
-                    std::cout << " (" << result.extractionMs * 1000.0 / count
-                              << " us par extraction)";
+                std::vector<int> values;
+                values.reserve(count);
+                for (std::size_t i = 0; i < count; ++i) {
+                    values.push_back(distribution(generator));
                 }
-                std::cout << ".\n";
+
+                std::vector<BenchmarkResult> results;
+                results.push_back(runBenchmark<HeapVector>("Maison / vector", "min", values));
+                results.push_back(runBenchmark<STLMinHeap>("STL / vector", "min", values));
+                results.push_back(runBenchmark<HeapMaxVector>("Maison / vector", "max", values));
+                results.push_back(runBenchmark<STLMaxHeap>("STL / vector", "max", values));
+                if (count <= 5000) {
+                    results.push_back(runBenchmark<HeapList>("Maison / list", "min", values));
+                    results.push_back(runBenchmark<HeapMap>("Maison / map", "min", values));
+                    results.push_back(runBenchmark<HeapMaxList>("Maison / list", "max", values));
+                    results.push_back(runBenchmark<HeapMaxMap>("Maison / map", "max", values));
+                } else {
+                    std::cout << "Pour N > 5000, list et map sont ignores : "
+                                 "leur acces indexe rend le tas trop lent.\n";
+                }
+                saveBenchmarkResults(count, results);
+
+                std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
+                          << std::fixed << std::setprecision(6);
+                for (const BenchmarkResult& result : results) {
+                    std::cout << "Tas " << result.heapType << " - " << result.containerName
+                              << " : insertion " << result.insertionMs
+                              << " ms, extraction des " << count << " racines "
+                              << result.extractionMs << " ms";
+                    if (count != 0) {
+                        std::cout << " (" << result.extractionMs * 1000.0 / count
+                                  << " us par extraction)";
+                    }
+                    std::cout << ".\n";
+                }
+            } catch (const std::bad_alloc& error) {
+                std::cout << "Allocation memoire echouee : " << error.what()
+                          << ". Benchmark interrompu, retour au menu.\n";
             }
         } else {
             std::cout << "Choix invalide.\n";
