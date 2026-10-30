@@ -6,12 +6,20 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+#include <limits>
 #include <map>
 #include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 // Les trois classes ci-dessous exposent le meme tableau indexe, avec
 // des couts d'acces differents selon le conteneur utilise.
@@ -72,23 +80,28 @@ private:
 };
 
 // Tas min generique : la racine (indice 0) contient toujours le minimum.
-template <typename Store>
-class MinHeap {
+template <typename Store, typename Compare>
+class BinaryHeap {
 public:
     std::size_t size() const { return values.size(); }
     bool empty() const { return values.empty(); }
+
+    void reserve(std::size_t count) { values.reserve(count); }
 
     void insert(int value) {
         values.pushBack(value);
         siftUp(values.size() - 1);
     }
 
-    int minimum() const {
+    int top() const {
         if (empty()) {
             throw std::runtime_error("Le tas est vide.");
         }
         return values.at(0);
     }
+
+    int minimum() const { return top(); }
+    int maximum() const { return top(); }
 
     bool contains(int value) const {
         for (std::size_t i = 0; i < values.size(); ++i) {
@@ -109,11 +122,14 @@ public:
         return false;
     }
 
-    int removeMinimum() {
-        const int result = minimum();
+    int extractTop() {
+        const int result = top();
         eraseAt(0);
         return result;
     }
+
+    int removeMinimum() { return extractTop(); }
+    int removeMaximum() { return extractTop(); }
 
     std::string toString() const {
         std::ostringstream output;
@@ -130,11 +146,12 @@ public:
 
 private:
     Store values;
+    Compare compare;
 
     void siftUp(std::size_t index) {
         while (index > 0) {
             const std::size_t parent = (index - 1) / 2;
-            if (values.at(parent) <= values.at(index)) {
+            if (!compare(values.at(index), values.at(parent))) {
                 break;
             }
             std::swap(values.at(parent), values.at(index));
@@ -146,19 +163,19 @@ private:
         while (index < values.size()) {
             const std::size_t left = 2 * index + 1;
             const std::size_t right = left + 1;
-            std::size_t smallest = index;
+            std::size_t best = index;
 
-            if (left < values.size() && values.at(left) < values.at(smallest)) {
-                smallest = left;
+            if (left < values.size() && compare(values.at(left), values.at(best))) {
+                best = left;
             }
-            if (right < values.size() && values.at(right) < values.at(smallest)) {
-                smallest = right;
+            if (right < values.size() && compare(values.at(right), values.at(best))) {
+                best = right;
             }
-            if (smallest == index) {
+            if (best == index) {
                 break;
             }
-            std::swap(values.at(index), values.at(smallest));
-            index = smallest;
+            std::swap(values.at(index), values.at(best));
+            index = best;
         }
     }
 
@@ -170,7 +187,7 @@ private:
         values.popBack();
 
         if (index < values.size()) {
-            if (index > 0 && values.at(index) < values.at((index - 1) / 2)) {
+            if (index > 0 && compare(values.at(index), values.at((index - 1) / 2))) {
                 siftUp(index);
             } else {
                 siftDown(index);
@@ -179,27 +196,42 @@ private:
     }
 };
 
+template <typename Store>
+using MinHeap = BinaryHeap<Store, std::less<int>>;
+
+template <typename Store>
+using MaxHeap = BinaryHeap<Store, std::greater<int>>;
+
 using HeapVector = MinHeap<VectorStore>;
 using HeapList = MinHeap<ListStore>;
 using HeapMap = MinHeap<MapStore>;
+using HeapMaxVector = MaxHeap<VectorStore>;
+using HeapMaxList = MaxHeap<ListStore>;
+using HeapMaxMap = MaxHeap<MapStore>;
 
 // Variante STL : les algorithmes standard manipulent directement un vector.
-class STLMinHeap {
+template <typename Compare>
+class STLHeap {
 public:
     std::size_t size() const { return values.size(); }
     bool empty() const { return values.empty(); }
 
+    void reserve(std::size_t count) { values.reserve(count); }
+
     void insert(int value) {
         values.push_back(value);
-        std::push_heap(values.begin(), values.end(), std::greater<int>());
+        std::push_heap(values.begin(), values.end(), compare);
     }
 
-    int minimum() const {
+    int top() const {
         if (empty()) {
             throw std::runtime_error("Le tas est vide.");
         }
         return values.front();
     }
+
+    int minimum() const { return top(); }
+    int maximum() const { return top(); }
 
     bool contains(int value) const {
         return std::find(values.begin(), values.end(), value) != values.end();
@@ -211,16 +243,19 @@ public:
             return false;
         }
         values.erase(position);
-        std::make_heap(values.begin(), values.end(), std::greater<int>());
+        std::make_heap(values.begin(), values.end(), compare);
         return true;
     }
 
-    int removeMinimum() {
-        const int result = minimum();
-        std::pop_heap(values.begin(), values.end(), std::greater<int>());
+    int extractTop() {
+        const int result = top();
+        std::pop_heap(values.begin(), values.end(), compare);
         values.pop_back();
         return result;
     }
+
+    int removeMinimum() { return extractTop(); }
+    int removeMaximum() { return extractTop(); }
 
     std::string toString() const {
         std::ostringstream output;
@@ -237,9 +272,14 @@ public:
 
 private:
     std::vector<int> values;
+    Compare compare;
 };
 
+using STLMinHeap = STLHeap<std::greater<int>>;
+using STLMaxHeap = STLHeap<std::less<int>>;
+
 struct BenchmarkResult {
+    std::string heapType;
     std::string containerName;
     double insertionMs = 0.0;
     double extractionMs = 0.0;
