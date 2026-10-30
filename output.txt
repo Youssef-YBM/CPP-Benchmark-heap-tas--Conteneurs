@@ -1,37 +1,7 @@
-﻿RESULTATS DU BENCHMARK DES TAS MIN - MEDIANES SUR 5 ESSAIS
-Machine : MSI Stealth GS66 12UGS, Intel Core i7-12700H, 14 coeurs / 20 processeurs logiques, 16 Go DDR5
-Systeme : Windows 11 Pro | Compilateur : g++ 16.2.0 | Options : -std=c++17 -O2 -Wall -Wextra -pedantic
-GPU non utilise. Chaque essai utilise les memes valeurs pour les trois conteneurs.
-Recherche : jusqu a 20 recherches reussies. Suppression : vider le tas par retraits du minimum.
-Affichage : construction de la chaine, sans ecriture disque. Durees en millisecondes.
+Affichage des tas min (ordre interne du tableau du tas)
 
-N = 100
-Conteneur | Insertion | Recherche | Suppression-min | Affichage
-vector | 0.0044 | 0.001 | 0.0072 | 0.0261
-list | 0.0314 | 0.0225 | 0.0394 | 0.0119
-map | 0.0378 | 0.0147 | 0.0574 | 0.0102
+vector : [9, 22, 88, 90]
+list : [9, 22, 88, 90]
+map : [9, 22, 88, 90]
 
-N = 500
-Conteneur | Insertion | Recherche | Suppression-min | Affichage
-vector | 0.0157 | 0.0022 | 0.034 | 0.0628
-list | 0.6407 | 1.2317 | 1.2148 | 0.2594
-map | 0.188 | 0.1325 | 0.4556 | 0.0578
-
-N = 1000
-Conteneur | Insertion | Recherche | Suppression-min | Affichage
-vector | 0.0291 | 0.0043 | 0.0708 | 0.0692
-list | 2.9389 | 4.6858 | 5.4643 | 0.9664
-map | 0.3677 | 0.2804 | 1.1249 | 0.0966
-
-N = 2000
-Conteneur | Insertion | Recherche | Suppression-min | Affichage
-vector | 0.0513 | 0.008 | 0.159 | 0.1477
-list | 14.9571 | 25.3912 | 29.5744 | 6.0623
-map | 0.875 | 0.8948 | 3.5223 | 0.2475
-
-N = 5000
-Conteneur | Insertion | Recherche | Suppression-min | Affichage
-vector | 0.1252 | 0.0193 | 0.4514 | 0.3058
-list | 128.5595 | 361.2346 | 244.8832 | 50.3267
-map | 2.0443 | 2.8306 | 10.347 | 0.5831
-
+La racine de chaque tas est son element minimum.
