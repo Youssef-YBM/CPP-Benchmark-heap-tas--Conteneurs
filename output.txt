@@ -6,22 +6,22 @@ Les temps n'incluent ni la generation des valeurs ni ce fichier.
 Les tas maison sur list et map sont limites a 5000 elements.
 
 === Tas min - Maison / vector ===
-Insertion (10000000 elements) : 128.858500 ms
-Extraction de toutes les racines (10000000 extractions) : 3688.443300 ms
-Temps moyen par extraction : 0.368844 us
+Insertion (10000000 elements) : 124.468600 ms
+Extraction de toutes les racines (10000000 extractions) : 4925.959500 ms
+Temps moyen par extraction : 0.492596 us
 
 === Tas min - STL / vector ===
-Insertion (10000000 elements) : 119.413100 ms
-Extraction de toutes les racines (10000000 extractions) : 5686.763000 ms
-Temps moyen par extraction : 0.568676 us
+Insertion (10000000 elements) : 198.367500 ms
+Extraction de toutes les racines (10000000 extractions) : 9060.284800 ms
+Temps moyen par extraction : 0.906028 us
 
 === Tas max - Maison / vector ===
-Insertion (10000000 elements) : 133.008400 ms
-Extraction de toutes les racines (10000000 extractions) : 3148.794700 ms
-Temps moyen par extraction : 0.314879 us
+Insertion (10000000 elements) : 206.213500 ms
+Extraction de toutes les racines (10000000 extractions) : 4642.240000 ms
+Temps moyen par extraction : 0.464224 us
 
 === Tas max - STL / vector ===
-Insertion (10000000 elements) : 121.280500 ms
-Extraction de toutes les racines (10000000 extractions) : 9616.006100 ms
-Temps moyen par extraction : 0.961601 us
+Insertion (10000000 elements) : 140.835000 ms
+Extraction de toutes les racines (10000000 extractions) : 7102.576100 ms
+Temps moyen par extraction : 0.710258 us
 
