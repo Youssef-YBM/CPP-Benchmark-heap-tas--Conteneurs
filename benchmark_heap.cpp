@@ -428,13 +428,17 @@ void runInteractiveMenu() {
     HeapList listHeap;
     HeapMap mapHeap;
     STLMinHeap stlHeap;
+    HeapMaxVector maxVectorHeap;
+    HeapMaxList maxListHeap;
+    HeapMaxMap maxMapHeap;
+    STLMaxHeap stlMaxHeap;
 
     while (true) {
-        std::cout << "\n===== MENU - TAS MIN =====\n"
-                  << "1. Inserer une valeur dans les quatre tas\n"
-                  << "2. Rechercher une valeur dans les quatre tas\n"
-                  << "3. Supprimer une valeur des quatre tas\n"
-                  << "4. Supprimer le minimum des quatre tas\n"
+        std::cout << "\n===== MENU - TAS MIN ET MAX =====\n"
+                  << "1. Inserer une valeur dans les huit tas\n"
+                  << "2. Rechercher une valeur dans les huit tas\n"
+                  << "3. Supprimer une valeur des huit tas\n"
+                  << "4. Extraire les racines des tas min et max\n"
                   << "5. Afficher les tas dans output.txt\n"
                   << "6. Lancer le benchmark aleatoire\n"
                   << "0. Quitter\n";
@@ -450,42 +454,70 @@ void runInteractiveMenu() {
             listHeap.insert(value);
             mapHeap.insert(value);
             stlHeap.insert(value);
-            std::cout << "Valeur inseree dans les quatre tas.\n";
+            maxVectorHeap.insert(value);
+            maxListHeap.insert(value);
+            maxMapHeap.insert(value);
+            stlMaxHeap.insert(value);
+            std::cout << "Valeur inseree dans les huit tas.\n";
         } else if (choice == 2) {
             const int value = readInteger("Valeur a rechercher : ");
             std::cout << "vector : " << (vectorHeap.contains(value) ? "trouvee" : "absente") << '\n'
                       << "list   : " << (listHeap.contains(value) ? "trouvee" : "absente") << '\n'
-            << "map    : " << (mapHeap.contains(value) ? "trouvee" : "absente") << '\n'
-            << "STL    : " << (stlHeap.contains(value) ? "trouvee" : "absente") << '\n';
+                      << "map    : " << (mapHeap.contains(value) ? "trouvee" : "absente") << '\n'
+                      << "STL    : " << (stlHeap.contains(value) ? "trouvee" : "absente") << '\n'
+                      << "max vector : " << (maxVectorHeap.contains(value) ? "trouvee" : "absente") << '\n'
+                      << "max list   : " << (maxListHeap.contains(value) ? "trouvee" : "absente") << '\n'
+                      << "max map    : " << (maxMapHeap.contains(value) ? "trouvee" : "absente") << '\n'
+                      << "max STL    : " << (stlMaxHeap.contains(value) ? "trouvee" : "absente") << '\n';
         } else if (choice == 3) {
             const int value = readInteger("Valeur a supprimer : ");
             std::cout << "vector : " << (vectorHeap.erase(value) ? "supprimee" : "absente") << '\n'
                       << "list   : " << (listHeap.erase(value) ? "supprimee" : "absente") << '\n'
-            << "map    : " << (mapHeap.erase(value) ? "supprimee" : "absente") << '\n'
-            << "STL    : " << (stlHeap.erase(value) ? "supprimee" : "absente") << '\n';
+                      << "map    : " << (mapHeap.erase(value) ? "supprimee" : "absente") << '\n'
+                      << "STL    : " << (stlHeap.erase(value) ? "supprimee" : "absente") << '\n'
+                      << "max vector : " << (maxVectorHeap.erase(value) ? "supprimee" : "absente") << '\n'
+                      << "max list   : " << (maxListHeap.erase(value) ? "supprimee" : "absente") << '\n'
+                      << "max map    : " << (maxMapHeap.erase(value) ? "supprimee" : "absente") << '\n'
+                      << "max STL    : " << (stlMaxHeap.erase(value) ? "supprimee" : "absente") << '\n';
         } else if (choice == 4) {
-            if (vectorHeap.empty()) {
-                std::cout << "Les tas sont vides : aucun minimum a supprimer.\n";
+            if (vectorHeap.empty() || maxVectorHeap.empty()) {
+                std::cout << "Les tas sont vides : aucune racine a extraire.\n";
                 continue;
             }
-            std::cout << "Minimum supprime : vector=" << vectorHeap.removeMinimum()
+            std::cout << "Minimums extraits : vector=" << vectorHeap.removeMinimum()
                       << ", list=" << listHeap.removeMinimum()
                       << ", map=" << mapHeap.removeMinimum()
-                      << ", STL=" << stlHeap.removeMinimum() << '\n';
+                      << ", STL=" << stlHeap.removeMinimum() << '\n'
+                      << "Maximums extraits : vector=" << maxVectorHeap.removeMaximum()
+                      << ", list=" << maxListHeap.removeMaximum()
+                      << ", map=" << maxMapHeap.removeMaximum()
+                      << ", STL=" << stlMaxHeap.removeMaximum() << '\n';
         } else if (choice == 5) {
-            saveInteractiveHeaps(vectorHeap, listHeap, mapHeap, stlHeap);
-            std::cout << "Les quatre tas ont ete ecrits dans output.txt.\n";
+            saveInteractiveHeaps(
+                vectorHeap, listHeap, mapHeap, stlHeap,
+                maxVectorHeap, maxListHeap, maxMapHeap, stlMaxHeap);
+            std::cout << "Les huit tas ont ete ecrits dans output.txt.\n";
         } else if (choice == 6) {
-            const int requestedCount = readInteger("Nombre d'elements a tester (0 a 1000000) : ");
-            if (requestedCount < 0 || requestedCount > 1000000) {
-                std::cout << "Le nombre doit etre compris entre 0 et 1000000.\n";
+            const int requestedCount = readInteger("Nombre d'elements a tester (0 a 1000000000) : ");
+            if (requestedCount < 0 || requestedCount > 1000000000) {
+                std::cout << "Le nombre doit etre compris entre 0 et 1000000000.\n";
                 continue;
             }
 
             const std::size_t count = static_cast<std::size_t>(requestedCount);
+            if (!hasEnoughMemoryForBenchmark(count)) {
+                const double requiredGiB =
+                    (static_cast<double>(count) * sizeof(int) * 2.0
+                     + 512.0 * 1024.0 * 1024.0) / (1024.0 * 1024.0 * 1024.0);
+                std::cout << "Memoire disponible insuffisante. Cette mesure demande environ "
+                          << std::fixed << std::setprecision(2) << requiredGiB
+                          << " Gio libres (valeurs + tas vector + marge).\n";
+                continue;
+            }
+
             std::mt19937 generator(std::random_device{}());
             std::uniform_int_distribution<int> distribution(
-                1, std::max(10, requestedCount * 10));
+                1, std::numeric_limits<int>::max());
 
             std::vector<int> values;
             values.reserve(count);
@@ -494,15 +526,19 @@ void runInteractiveMenu() {
             }
 
             std::vector<BenchmarkResult> results;
-            results.push_back(runBenchmark<HeapVector>("Maison / vector", values));
+            results.push_back(runBenchmark<HeapVector>("Maison / vector", "min", values));
+            results.push_back(runBenchmark<STLMinHeap>("STL / vector", "min", values));
+            results.push_back(runBenchmark<HeapMaxVector>("Maison / vector", "max", values));
+            results.push_back(runBenchmark<STLMaxHeap>("STL / vector", "max", values));
             if (count <= 5000) {
-                results.push_back(runBenchmark<HeapList>("Maison / list", values));
-                results.push_back(runBenchmark<HeapMap>("Maison / map", values));
+                results.push_back(runBenchmark<HeapList>("Maison / list", "min", values));
+                results.push_back(runBenchmark<HeapMap>("Maison / map", "min", values));
+                results.push_back(runBenchmark<HeapMaxList>("Maison / list", "max", values));
+                results.push_back(runBenchmark<HeapMaxMap>("Maison / map", "max", values));
             } else {
                 std::cout << "Pour N > 5000, list et map sont ignores : "
                              "leur acces indexe rend le tas trop lent.\n";
             }
-            results.push_back(runBenchmark<STLMinHeap>("STL / vector", values));
             saveBenchmarkResults(count, results);
 
             std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
@@ -510,7 +546,7 @@ void runInteractiveMenu() {
             for (const BenchmarkResult& result : results) {
                 std::cout << result.containerName
                           << " : insertion " << result.insertionMs
-                          << " ms, extraction des " << count << " minimums "
+                          << " ms, extraction des " << count << " racines "
                           << result.extractionMs << " ms";
                 if (count != 0) {
                     std::cout << " (" << result.extractionMs * 1000.0 / count
