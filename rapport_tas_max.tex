@@ -1,0 +1,252 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+
+\geometry{margin=2.3cm}
+\definecolor{bleufonce}{HTML}{123B63}
+\definecolor{bleuclair}{HTML}{2F80C1}
+\definecolor{turquoise}{HTML}{159A9C}
+\definecolor{orange}{HTML}{E18A36}
+\definecolor{violet}{HTML}{7851A9}
+\definecolor{grisclair}{HTML}{F1F5F9}
+\pgfplotsset{compat=1.17}
+\titleformat{\section}
+  {\Large\bfseries\color{bleufonce}}
+  {\thesection}{0.7em}{}
+  [\vspace{0.2em}{\color{bleuclair}\titlerule}]
+\titleformat{\subsection}
+  {\large\bfseries\color{bleuclair}}
+  {\thesubsection}{0.7em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{bleufonce}Benchmark du tas max}
+\fancyhead[R]{\small\color{bleufonce}ERRAMI Youssef}
+\fancyfoot[C]{\color{bleufonce}\thepage}
+\setlength{\headheight}{15pt}
+\sisetup{
+  output-decimal-marker = {,},
+  group-separator = {\,},
+  group-minimum-digits = 4
+}
+
+\title{Comparaison de conteneurs pour l'implémentation d'un tas max}
+\author{ERRAMI Youssef}
+\date{30 octobre 2026}
+
+\begin{document}
+\begin{center}
+  {\color{bleuclair}\rule{\textwidth}{1.2pt}}\\[0.8em]
+  {\Huge\bfseries\color{bleufonce}
+    Comparaison de conteneurs\\[0.2em]
+    pour un tas max}\\[0.6em]
+  {\Large\color{bleuclair}Comparaison des performances en C++}\\[1.2em]
+  {\large\bfseries ERRAMI Youssef}\\[0.3em]
+  {\color{bleufonce}30 octobre 2026}\\[0.8em]
+  {\color{bleuclair}\rule{\textwidth}{1.2pt}}
+\end{center}
+\vspace{0.8em}
+
+\noindent
+\colorbox{grisclair}{%
+  \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+    \textcolor{bleufonce}{\textbf{Comparaison.}}
+    Tas max maison sur \texttt{vector}, \texttt{list} et \texttt{map},
+    comparés au tas max STL sur \texttt{vector}.%
+  }%
+}
+
+\section{Ordinateur}
+\begin{itemize}
+  \item MSI Stealth GS66 12UGS.
+  \item Intel Core i7-12700H, 14 coeurs.
+  \item NVIDIA GeForce RTX 3070 Ti.
+  \item 16 Go de mémoire DDR5.
+\end{itemize}
+
+\section{Résultats}
+
+Les temps sont exprimés en millisecondes. Les résultats pour $N\leq 5\,000$
+et $N=1\,000\,000$ sont les médianes de cinq exécutions. À
+$N=100\,000\,000$, une seule exécution est disponible : les chiffres ne sont
+donc pas des médianes. L'extraction mesure le retrait successif des $N$
+maximums jusqu'à vider le tas. Les mêmes valeurs aléatoires sont utilisées
+par les variantes d'un même essai. « -- » signifie qu'aucune mesure n'est
+disponible. Les variantes maison sur \texttt{list} et \texttt{map} sont
+mesurées seulement jusqu'à $N=5\,000$.
+
+\subsection{Insertion}
+
+\begin{table}[htbp]
+\centering
+\caption{Tas max : temps d'insertion (ms)}
+\label{tab:max-insertion}
+\small
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
+\toprule
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
+\midrule
+100       & 0.001500 & 0.018400 & 0.023200 & 0.001600 \\
+500       & 0.007100 & 0.508900 & 0.133100 & 0.006800 \\
+1000      & 0.013000 & 1.986900 & 0.312800 & 0.012700 \\
+2000      & 0.025400 & 9.498000 & 0.589800 & 0.025500 \\
+5000      & 0.063200 & 98.962800 & 1.483000 & 0.060200 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 12.620200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 12.064200 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 2252.815600 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 2210.443300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Extraction du maximum}
+
+\begin{table}[htbp]
+\centering
+\caption{Tas max : temps d'extraction des $N$ maximums (ms)}
+\label{tab:max-extraction}
+\small
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
+\toprule
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
+\midrule
+100       & 0.003900 & 0.026700 & 0.041200 & 0.002400 \\
+500       & 0.026800 & 0.890000 & 0.313400 & 0.013500 \\
+1000      & 0.052500 & 4.029200 & 0.908500 & 0.022800 \\
+2000      & 0.113700 & 18.773400 & 2.196400 & 0.056500 \\
+5000      & 0.308800 & 170.574900 & 7.886300 & 0.125600 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 161.764400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 158.403400 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 74721.719500 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 182454.176300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\clearpage
+\section{Graphiques}
+
+Les courbes relient les temps mesurés pour $N=100$, $500$, $1\,000$,
+$2\,000$, $5\,000$, $1\,000\,000$ et $100\,000\,000$. Les segments entre
+points servent uniquement à visualiser l'évolution : ils ne représentent pas
+de mesures supplémentaires. L'axe vertical logarithmique rend visibles les
+temps courts et longs.
+
+\pgfplotsset{
+  benchmark axis/.style={
+    width=0.92\textwidth,
+    height=7.0cm,
+    xmode=linear,
+    ymode=log,
+    log basis y=10,
+    ymin=0.001,
+    ymax=300000,
+    xmin=0.7,
+    xmax=10.3,
+    xtick={1,2,3,4,5,6,7,8,9,10},
+    xticklabels={100,500,1k,2k,5k,10k,100k,1M,10M,100M},
+    xlabel={Nombre d'éléments $N$},
+    ylabel={Temps mesuré (ms, échelle logarithmique)},
+    ytick={0.001,0.01,0.1,1,10,100,1000,10000,100000},
+    yticklabels={$10^{-3}$,$10^{-2}$,$10^{-1}$,$10^0$,$10^1$,$10^2$,$10^3$,$10^4$,$10^5$},
+    scaled y ticks=false,
+    grid=both,
+    major grid style={gray!30},
+    minor grid style={gray!12},
+    tick label style={font=\small},
+    label style={font=\small\color{bleufonce}},
+    legend style={
+      at={(0.5,-0.20)},
+      anchor=north,
+      legend columns=2,
+      draw=none,
+      font=\small
+    },
+    line width=1.1pt,
+    mark size=3.0pt
+  }
+}
+
+\subsection{Insertion}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (1,0.0015) (2,0.0071) (3,0.0130) (4,0.0254) (5,0.0632)
+  (8,12.6202) (10,2252.8156)
+};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (1,0.0184) (2,0.5089) (3,1.9869) (4,9.4980) (5,98.9628)
+};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (1,0.0232) (2,0.1331) (3,0.3128) (4,0.5898) (5,1.4830)
+};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (1,0.0016) (2,0.0068) (3,0.0127) (4,0.0255) (5,0.0602)
+  (8,12.0642) (10,2210.4433)
+};
+\addlegendentry{STL/vector}
+\end{axis}
+\end{tikzpicture}
+\caption{Insertion dans les tas max.}
+\label{fig:max-insertion}
+\end{figure}
+
+\subsection{Extraction}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[benchmark axis]
+\addplot[color=bleufonce,mark=*] coordinates {
+  (1,0.0039) (2,0.0268) (3,0.0525) (4,0.1137) (5,0.3088)
+  (8,161.7644) (10,74721.7195)
+};
+\addlegendentry{maison/vector}
+\addplot[color=turquoise,mark=square*] coordinates {
+  (1,0.0267) (2,0.8900) (3,4.0292) (4,18.7734) (5,170.5749)
+};
+\addlegendentry{maison/list}
+\addplot[color=orange,mark=triangle*] coordinates {
+  (1,0.0412) (2,0.3134) (3,0.9085) (4,2.1964) (5,7.8863)
+};
+\addlegendentry{maison/map}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (1,0.0024) (2,0.0135) (3,0.0228) (4,0.0565) (5,0.1256)
+  (8,158.4034) (10,182454.1763)
+};
+\addlegendentry{STL/vector}
+\end{axis}
+\end{tikzpicture}
+\caption{Extraction des maximums jusqu'à vider le tas max.}
+\label{fig:max-extraction}
+\end{figure}
+
+\section{Comparaison}
+
+À $N=1\,000\,000$, les médianes d'insertion sont de \SI{12.6202}{ms} pour
+la version maison/vector et \SI{12.0642}{ms} pour la STL/vector. L'extraction
+complète prend respectivement \SI{161.7644}{ms} et \SI{158.4034}{ms}.
+
+À $N=100\,000\,000$, une seule exécution a été conservée : insertion
+\SI{2252.8156}{ms} (maison/vector) contre \SI{2210.4433}{ms} (STL/vector) ;
+extraction \SI{74721.7195}{ms} contre \SI{182454.1763}{ms}. L'écart important
+observé à l'extraction doit être interprété avec prudence, car ce résultat
+n'est pas confirmé par des répétitions. Les mesures de ce rapport sont
+disponibles dans \texttt{benchmark\_resultats.csv}.
+
+\end{document}
