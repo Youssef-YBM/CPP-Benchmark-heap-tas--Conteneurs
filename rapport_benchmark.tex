@@ -40,7 +40,7 @@
 
 \title{Comparaison de conteneurs pour l'implémentation d'un tas min}
 \author{ERRAMI Youssef}
-\date{28 octobre 2026}
+\date{30 octobre 2026}
 
 \begin{document}
 \begin{center}
@@ -48,9 +48,9 @@
   {\Huge\bfseries\color{bleufonce}
     Comparaison de conteneurs\\[0.2em]
     pour un tas min}\\[0.6em]
-  {\Large\color{bleuclair}Benchmark expérimental en C++}\\[1.2em]
+  {\Large\color{bleuclair}Comparaison des performances en C++}\\[1.2em]
   {\large\bfseries ERRAMI Youssef}\\[0.3em]
-  {\color{bleufonce}28 octobre 2026}\\[0.8em]
+  {\color{bleufonce}30 octobre 2026}\\[0.8em]
   {\color{bleuclair}\rule{\textwidth}{1.2pt}}
 \end{center}
 \vspace{0.8em}
@@ -58,126 +58,25 @@
 \noindent
 \colorbox{grisclair}{%
   \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-    \textcolor{bleufonce}{\textbf{Résultat principal.}}
-    Pour ce tas binaire indexé, \texttt{std::vector} obtient les temps les
-    plus faibles pour l'insertion, la recherche et la suppression du minimum.
-    Les graphiques ci-dessous présentent les médianes de cinq essais pour
-    chaque taille testée.%
+    \textcolor{bleufonce}{\textbf{Comparaison.}}
+    Ce rapport compare les temps d'insertion, de recherche, de suppression
+    du minimum et d'affichage avec \texttt{vector}, \texttt{list} et
+    \texttt{map}.%
   }%
 }
-
-\section{Présentation de mon programme}
-
-Dans ce projet, j'ai réalisé un programme C++ qui implémente un tas binaire
-min et compare son fonctionnement avec trois conteneurs : \texttt{std::vector},
-\texttt{std::list} et \texttt{std::map}. Le menu permet de manipuler les trois
-tas en parallèle et de lancer un benchmark. Les opérations comparées sont
-l'insertion, la recherche, la suppression et l'affichage.
-
-\section{Structure du code}
-
-La logique du tas est définie une seule fois dans le modèle générique
-\texttt{MinHeap<Store>}. Le paramètre \texttt{Store} indique la manière dont
-les valeurs sont rangées. Trois classes adaptatrices, \texttt{VectorStore},
-\texttt{ListStore} et \texttt{MapStore}, fournissent les mêmes opérations de
-base : accès par indice, ajout à la fin, retrait du dernier élément et accès
-à la taille. Ainsi, les trois variantes suivent le même algorithme ; seul le
-conteneur utilisé pour accéder aux valeurs change.
-
-\begin{itemize}
-  \item \texttt{VectorStore} repose sur \texttt{std::vector}, qui accède
-        directement à l'élément demandé par son indice.
-  \item \texttt{ListStore} repose sur \texttt{std::list}. Pour atteindre
-        l'indice demandé, il faut avancer dans les éléments de la liste.
-  \item \texttt{MapStore} repose sur \texttt{std::map}, avec des indices
-        successifs comme clés. L'accès à un indice s'effectue par recherche
-        de cette clé dans l'arbre ordonné de la map.
-\end{itemize}
-
-\section{Logique du tas min}
-
-Le tas est un arbre binaire complet représenté par un tableau logique. Sa
-racine, à l'indice zéro, contient la plus petite valeur. Pour un élément
-d'indice $i$, l'indice de son parent est
-$\left\lfloor(i-1)/2\right\rfloor$ et ceux de ses enfants sont $2i+1$ et
-$2i+2$. La règle à maintenir après chaque modification est que la valeur d'un
-parent est inférieure ou égale à celles de ses enfants.
-
-\subsection{Insertion et réorganisation vers le haut}
-
-La fonction \texttt{insert} ajoute la nouvelle valeur à la fin du stockage.
-La fonction \texttt{siftUp} la compare ensuite à son parent. Si elle est plus
-petite, les deux valeurs sont échangées et la comparaison continue vers la
-racine. Le déplacement s'arrête dès que la propriété du tas est rétablie.
-Cette opération maintient la racine comme minimum, sans devoir trier toutes
-les valeurs.
-
-\subsection{Recherche}
-
-La fonction \texttt{contains} parcourt les éléments et s'arrête dès qu'elle
-trouve la valeur recherchée. Une recherche peut donc examiner une partie ou
-la totalité du tas. Le tas ordonne seulement les relations parent-enfants :
-il ne garantit pas que toutes les valeurs soient triées de gauche à droite.
-On ne peut donc pas appliquer à cette recherche les règles d'un arbre de
-recherche binaire.
-
-\subsection{Suppression et réorganisation}
-
-Pour supprimer une valeur donnée, \texttt{erase} la recherche dans le tas.
-Une fois l'indice trouvé, \texttt{eraseAt} remplace cette valeur par le
-dernier élément, puis retire la dernière case. Selon la valeur déplacée, le
-tas est réorganisé vers le haut avec \texttt{siftUp}, ou vers le bas avec
-\texttt{siftDown}. Pour supprimer le minimum, \texttt{removeMinimum} applique
-la même procédure à l'indice zéro. Après le remplacement de la racine,
-\texttt{siftDown} échange l'élément avec son plus petit enfant jusqu'au
-rétablissement de la propriété du tas.
-
-\subsection{Affichage}
-
-La méthode \texttt{toString} parcourt les indices du stockage et construit
-une chaîne contenant les valeurs dans leur ordre interne au tas. Cet ordre
-montre l'arbre dans sa représentation par tableau, mais ne correspond pas à
-un tri complet. L'option correspondante du menu écrit les trois chaînes dans
-\texttt{output.txt}.
-
-\section{Menu et fonctionnement du benchmark}
-
-Le menu conserve un tas distinct pour chaque conteneur. Lors d'une insertion,
-d'une recherche ou d'une suppression par valeur, la même valeur et la même
-opération sont appliquées aux trois structures. Le menu permet également de
-retirer le minimum, d'enregistrer l'affichage dans \texttt{output.txt}, de
-lancer le benchmark ou de quitter le programme.
-
-Pour un benchmark, le programme génère une série de valeurs aléatoires puis
-construit chaque variante avec cette même série. Il mesure séparément le
-temps d'insertion, la recherche d'au plus 20 valeurs déjà insérées, la
-suppression successive des minimums jusqu'à vider le tas et la création de
-la chaîne d'affichage. Les mesures sont ensuite affichées dans la console et
-enregistrées dans \texttt{output.txt}.
-
-Dans les résultats qui suivent, $N$ désigne le nombre de valeurs insérées.
-Les tableaux et les graphiques présentent les médianes de cinq exécutions,
-en millisecondes.
 
 \section{Environnement de test}
 
 \begin{itemize}
   \item Ordinateur : MSI Stealth GS66 12UGS.
-  \item Processeur : Intel Core i7-12700H, 14 coeurs et 20 processeurs logiques
-        (informations relevées dans Windows).
-  \item Mémoire vive : 16 Go DDR5 (capacité annoncée et cohérente avec les
-        15,7 Gio de mémoire physique exposés par Windows).
-  \item Carte graphique : NVIDIA GeForce RTX 3070 Ti Laptop GPU. Elle n'est
-        pas sollicitée par ce benchmark, qui mesure du code C++ exécuté sur le
-        processeur.
-  \item Système : Windows 11 Pro.
-  \item Compilateur : g++ 16.2.0 (MSYS2), avec les options
-        \texttt{-std=c++17 -O2 -Wall -Wextra -pedantic}.
+  \item Processeur : Intel Core i7-12700H, 14 coeurs.
+  \item Carte graphique : NVIDIA GeForce RTX 3070 Ti.
+  \item Mémoire vive : 16 Go DDR5.
 \end{itemize}
 
 \section{Résultats}
 
-\subsection{Insertion de $N$ valeurs}
+\subsection{Insertion}
 
 \begin{table}[htbp]
 \centering
@@ -196,11 +95,11 @@ en millisecondes.
 \end{tabular}
 \end{table}
 
-\subsection{Recherche de valeurs présentes}
+\subsection{Recherche}
 
 \begin{table}[htbp]
 \centering
-\caption{Temps médian de recherche (ms, jusqu'à 20 requêtes)}
+\caption{Temps médian de recherche (ms)}
 \label{tab:recherche}
 \begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
@@ -215,11 +114,11 @@ en millisecondes.
 \end{tabular}
 \end{table}
 
-\subsection{Suppression répétée du minimum}
+\subsection{Suppression du minimum}
 
 \begin{table}[htbp]
 \centering
-\caption{Temps médian pour vider le tas par suppressions du minimum (ms)}
+\caption{Temps médian de suppression répétée du minimum (ms)}
 \label{tab:suppression}
 \begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
@@ -234,7 +133,7 @@ en millisecondes.
 \end{tabular}
 \end{table}
 
-\subsection{Préparation de l'affichage}
+\subsection{Affichage}
 
 \begin{table}[htbp]
 \centering
@@ -255,9 +154,8 @@ en millisecondes.
 
 \section{Visualisation graphique}
 
-Les axes verticaux sont logarithmiques afin de rendre visibles les trois
-conteneurs malgré les écarts de temps importants. Chaque point représente la
-médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
+Temps en millisecondes. Les axes sont logarithmiques pour faciliter la
+comparaison entre les conteneurs.
 
 \pgfplotsset{
   benchmark axis/.style={
@@ -334,7 +232,7 @@ médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
 \label{fig:recherche}
 \end{figure}
 
-\subsection{Suppression répétée du minimum}
+\subsection{Suppression du minimum}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
@@ -353,11 +251,11 @@ médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
 \addlegendentry{\texttt{map}}
 \end{axis}
 \end{tikzpicture}
-\caption{Temps médian pour vider le tas en retirant successivement le minimum.}
+\caption{Temps médian de suppression répétée du minimum.}
 \label{fig:suppression}
 \end{figure}
 
-\subsection{Préparation de l'affichage}
+\subsection{Affichage}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
@@ -376,46 +274,15 @@ médiane de cinq essais. Les valeurs sont exprimées en millisecondes.
 \addlegendentry{\texttt{map}}
 \end{axis}
 \end{tikzpicture}
-\caption{Temps médian pour préparer la chaîne d'affichage du tas.}
+\caption{Temps médian de préparation de l'affichage du tas.}
 \label{fig:affichage}
 \end{figure}
 
-\section{Analyse}
+\section{Comparaison}
 
-Les résultats suivent directement la façon dont le tas utilise son stockage.
-Pour rétablir l'ordre, \texttt{siftUp} et \texttt{siftDown} accèdent à un
-élément, à son parent et à ses enfants par leurs indices. Avec
-\texttt{std::vector}, ces accès sont directs ; c'est pourquoi cette variante
-obtient les meilleurs temps pour l'insertion, la recherche et la suppression
-du minimum. Pour $N=5000$, elle met \SI{0.1252}{ms} à insérer les valeurs,
-\SI{0.0193}{ms} à effectuer les recherches mesurées et \SI{0.4514}{ms} à vider
-le tas.
-
-Dans \texttt{ListStore}, l'accès à un indice avance depuis le début de la
-liste. Comme les opérations du tas font de nombreux accès indexés, ce coût se
-répète pendant les échanges et les comparaisons. La recherche d'une valeur
-parcourt également le tas : avec $N=5000$, les recherches mesurées sur
-\texttt{list} prennent \SI{361.2346}{ms}, contre \SI{0.0193}{ms} sur
-\texttt{vector}. La \texttt{map} est intermédiaire : ses clés permettent de
-retrouver un indice dans un arbre ordonné, mais chaque accès demande une
-recherche de clé au lieu d'un accès direct.
-
-L'affichage illustre également le coût d'accès. La méthode
-\texttt{toString} parcourt les indices du tas ; elle bénéficie donc du
-vecteur, tandis que les accès répétés pénalisent la liste. Au total, le choix
-du conteneur ne modifie pas les règles du tas implémentées dans
-\texttt{MinHeap}, mais il modifie fortement le coût d'exécution de ces règles.
-
-\section{Conclusion}
-
-Ce projet m'a permis de mettre en pratique l'implémentation d'un tas min et
-de comparer l'effet du conteneur sur les opérations. Les résultats montrent
-que \texttt{std::vector} convient le mieux à cette logique : le tas calcule
-en permanence les indices des parents et des enfants, et le vecteur donne un
-accès direct à ces positions. La \texttt{std::map} peut conserver des éléments
-repérés par indice, mais chaque accès demande une recherche dans la structure.
-La \texttt{std::list} est la moins adaptée, car atteindre une position
-particulière demande de parcourir la liste. Le choix du conteneur doit donc
-correspondre à la manière dont l'algorithme accède aux données.
+\texttt{vector} est le plus rapide pour l'insertion, la recherche et la
+suppression du minimum. \texttt{map} arrive généralement en deuxième position,
+tandis que \texttt{list} est la plus lente pour les opérations du tas. Ces
+résultats s'expliquent par les accès par indice nécessaires au tas binaire.
 
 \end{document}
