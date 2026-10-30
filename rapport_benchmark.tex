@@ -60,8 +60,9 @@
 \colorbox{grisclair}{%
   \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
     \textcolor{bleufonce}{\textbf{Comparaison.}}
-    Ce rapport compare les tas maison (\texttt{vector}, \texttt{list},
-    \texttt{map}) avec les algorithmes de tas de la STL sur \texttt{vector}.%
+    Comparaison des temps d'insertion et d'extraction du minimum pour les tas
+    maison (\texttt{vector}, \texttt{list}, \texttt{map}) et le tas STL sur
+    \texttt{vector}.%
   }%
 }
 
@@ -77,9 +78,9 @@
 \section{Résultats}
 
 Les trois tas maison utilisent respectivement \texttt{vector}, \texttt{list}
-et \texttt{map}. Le quatrième utilise le tas STL (\texttt{push\_heap},
-\texttt{pop\_heap}, \texttt{make\_heap}) avec \texttt{vector}. Temps en
-millisecondes ; chaque valeur est la médiane de cinq exécutions.
+et \texttt{map}. Le quatrième utilise les algorithmes STL
+(\texttt{push\_heap}, \texttt{pop\_heap}) avec \texttt{vector}. Chaque valeur
+est la médiane de cinq exécutions, en millisecondes.
 
 \subsection{Insertion}
 
@@ -102,33 +103,12 @@ millisecondes ; chaque valeur est la médiane de cinq exécutions.
 \normalsize
 \end{table}
 
-\subsection{Recherche}
+\subsection{Extraction du minimum}
 
 \begin{table}[htbp]
 \centering
-\caption{Temps médian de recherche (ms)}
-\label{tab:recherche}
-\small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
-\toprule
-{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
-\midrule
-100  & 0.000700 & 0.018900 & 0.010600 & 0.000500 \\
-500  & 0.001700 & 0.832000 & 0.080000 & 0.001100 \\
-1000 & 0.002600 & 2.989800 & 0.188200 & 0.001600 \\
-2000 & 0.005400 & 18.786600 & 0.615800 & 0.003300 \\
-5000 & 0.012100 & 164.178800 & 1.760100 & 0.007200 \\
-\bottomrule
-\end{tabular}
-\normalsize
-\end{table}
-
-\subsection{Suppression du minimum}
-
-\begin{table}[htbp]
-\centering
-\caption{Temps médian de suppression répétée du minimum (ms)}
-\label{tab:suppression}
+\caption{Temps médian pour extraire les $N$ minimums jusqu'à vider le tas (ms)}
+\label{tab:extraction}
 \small
 \begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
@@ -144,32 +124,10 @@ millisecondes ; chaque valeur est la médiane de cinq exécutions.
 \normalsize
 \end{table}
 
-\subsection{Affichage}
-
-\begin{table}[htbp]
-\centering
-\caption{Temps médian de création de la chaîne d'affichage (ms)}
-\label{tab:affichage}
-\small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
-\toprule
-{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
-\midrule
-100  & 0.020000 & 0.007900 & 0.006800 & 0.003000 \\
-500  & 0.033500 & 0.154900 & 0.030000 & 0.013000 \\
-1000 & 0.045700 & 0.611700 & 0.060800 & 0.048300 \\
-2000 & 0.080000 & 3.361700 & 0.143700 & 0.076800 \\
-5000 & 0.195000 & 28.400800 & 0.360100 & 0.168700 \\
-\bottomrule
-\end{tabular}
-\normalsize
-\end{table}
-
 \section{Visualisation graphique}
 
-Les temps sont en millisecondes. La légende distingue les trois implémentations
-maison de la version STL. Les axes sont logarithmiques pour faciliter la
-comparaison.
+Chaque graphique compare les quatre implémentations pour une même opération.
+Les temps sont en millisecondes et les axes verticaux sont logarithmiques.
 
 \pgfplotsset{
   benchmark axis/.style={
@@ -227,34 +185,7 @@ comparaison.
 \label{fig:insertion}
 \end{figure}
 
-\subsection{Recherche}
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}
-\begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {
-  (100,0.0007) (500,0.0017) (1000,0.0026) (2000,0.0054) (5000,0.0121)
-};
-\addlegendentry{\texttt{maison/vector}}
-\addplot[color=turquoise,mark=square*] coordinates {
-  (100,0.0189) (500,0.8320) (1000,2.9898) (2000,18.7866) (5000,164.1788)
-};
-\addlegendentry{\texttt{maison/list}}
-\addplot[color=orange,mark=triangle*] coordinates {
-  (100,0.0106) (500,0.0800) (1000,0.1882) (2000,0.6158) (5000,1.7601)
-};
-\addlegendentry{\texttt{maison/map}}
-\addplot[color=violet,mark=diamond*] coordinates {
-  (100,0.0005) (500,0.0011) (1000,0.0016) (2000,0.0033) (5000,0.0072)
-};
-\addlegendentry{\texttt{STL vector}}
-\end{axis}
-\end{tikzpicture}
-\caption{Temps médian pour jusqu'à 20 recherches de valeurs présentes.}
-\label{fig:recherche}
-\end{figure}
-
-\subsection{Suppression du minimum}
+\subsection{Extraction du minimum}
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
@@ -277,43 +208,16 @@ comparaison.
 \addlegendentry{\texttt{STL vector}}
 \end{axis}
 \end{tikzpicture}
-\caption{Temps médian de suppression répétée du minimum.}
-\label{fig:suppression}
-\end{figure}
-
-\subsection{Affichage}
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}
-\begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {
-  (100,0.0200) (500,0.0335) (1000,0.0457) (2000,0.0800) (5000,0.1950)
-};
-\addlegendentry{\texttt{maison/vector}}
-\addplot[color=turquoise,mark=square*] coordinates {
-  (100,0.0079) (500,0.1549) (1000,0.6117) (2000,3.3617) (5000,28.4008)
-};
-\addlegendentry{\texttt{maison/list}}
-\addplot[color=orange,mark=triangle*] coordinates {
-  (100,0.0068) (500,0.0300) (1000,0.0608) (2000,0.1437) (5000,0.3601)
-};
-\addlegendentry{\texttt{maison/map}}
-\addplot[color=violet,mark=diamond*] coordinates {
-  (100,0.0030) (500,0.0130) (1000,0.0483) (2000,0.0768) (5000,0.1687)
-};
-\addlegendentry{\texttt{STL vector}}
-\end{axis}
-\end{tikzpicture}
-\caption{Temps médian de préparation de l'affichage du tas.}
-\label{fig:affichage}
+\caption{Temps médian d'extraction des $N$ minimums.}
+\label{fig:extraction}
 \end{figure}
 
 \section{Comparaison}
 
-La version STL sur \texttt{vector} et le tas maison sur \texttt{vector}
-obtiennent les meilleurs résultats. À $N=5000$, la version STL est plus
-rapide pour la recherche et la suppression du minimum. Les variantes sur
-\texttt{map} sont plus lentes, et celles sur \texttt{list} le sont nettement
-plus à cause des accès par indice.
+À $N=5000$, l'insertion prend \SI{0.0771}{ms} avec le tas STL sur
+\texttt{vector} et \SI{0.0793}{ms} avec le tas maison sur \texttt{vector}.
+Pour extraire les 5000 minimums, les temps sont respectivement
+\SI{0.1054}{ms} et \SI{0.2802}{ms}. Les variantes maison sur \texttt{map}
+et surtout sur \texttt{list} sont plus lentes pour ces opérations.
 
 \end{document}

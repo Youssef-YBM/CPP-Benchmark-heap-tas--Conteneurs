@@ -244,7 +244,7 @@ struct BenchmarkResult {
     std::string heapSnapshot;
     double insertionMs = 0.0;
     double searchMs = 0.0;
-    double deletionMs = 0.0;
+    double extractionMs = 0.0;
     double displayMs = 0.0;
     std::size_t queries = 0;
     std::size_t found = 0;
@@ -286,7 +286,7 @@ BenchmarkResult runBenchmark(
         result.heapSnapshot = heap.toString();
     });
 
-    result.deletionMs = measureMilliseconds([&]() {
+    result.extractionMs = measureMilliseconds([&]() {
         while (!heap.empty()) {
             heap.removeMinimum();
         }
@@ -353,8 +353,8 @@ void saveBenchmarkResults(
                << "Insertion (" << count << " elements) : " << result.insertionMs << " ms\n"
                << "Recherche (" << result.queries << " requetes, "
                << result.found << " trouvees) : " << result.searchMs << " ms\n"
-               << "Suppression de tous les elements par minimum : "
-               << result.deletionMs << " ms\n"
+               << "Extraction de tous les minimums (" << count
+               << " extractions) : " << result.extractionMs << " ms\n"
                << "Preparation de l'affichage : " << result.displayMs << " ms\n\n";
     }
 }
@@ -465,8 +465,8 @@ void runInteractiveMenu() {
             for (const BenchmarkResult& result : results) {
                 std::cout << result.containerName
                           << " : insertion " << result.insertionMs << " ms, recherche "
-                          << result.searchMs << " ms, suppression "
-                          << result.deletionMs << " ms, affichage "
+                          << result.searchMs << " ms, extraction des minimums "
+                          << result.extractionMs << " ms, affichage "
                           << result.displayMs << " ms.\n";
             }
         } else {

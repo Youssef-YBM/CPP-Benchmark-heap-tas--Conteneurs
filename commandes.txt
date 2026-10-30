@@ -21,7 +21,7 @@ Fonctionnement :
 - Le choix 4 supprime le minimum de chaque tas.
 - Le choix 5 ecrit les tas courants dans output.txt.
 - Le choix 6 demande N, genere N valeurs aleatoires identiques pour les quatre
-  tas et mesure insertion, recherche, suppression de tous les elements par
+  tas et mesure insertion, recherche, extraction de tous les minimums par
   minimum et preparation de l'affichage. Jusqu'a 20 recherches reussies sont
   mesurees.
 - Les resultats du benchmark remplacent le contenu precedent de output.txt.
