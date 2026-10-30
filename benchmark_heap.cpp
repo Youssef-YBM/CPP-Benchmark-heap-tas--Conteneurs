@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <chrono>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
@@ -182,6 +183,62 @@ using HeapVector = MinHeap<VectorStore>;
 using HeapList = MinHeap<ListStore>;
 using HeapMap = MinHeap<MapStore>;
 
+// Variante STL : les algorithmes standard manipulent directement un vector.
+class STLMinHeap {
+public:
+    std::size_t size() const { return values.size(); }
+    bool empty() const { return values.empty(); }
+
+    void insert(int value) {
+        values.push_back(value);
+        std::push_heap(values.begin(), values.end(), std::greater<int>());
+    }
+
+    int minimum() const {
+        if (empty()) {
+            throw std::runtime_error("Le tas est vide.");
+        }
+        return values.front();
+    }
+
+    bool contains(int value) const {
+        return std::find(values.begin(), values.end(), value) != values.end();
+    }
+
+    bool erase(int value) {
+        const auto position = std::find(values.begin(), values.end(), value);
+        if (position == values.end()) {
+            return false;
+        }
+        values.erase(position);
+        std::make_heap(values.begin(), values.end(), std::greater<int>());
+        return true;
+    }
+
+    int removeMinimum() {
+        const int result = minimum();
+        std::pop_heap(values.begin(), values.end(), std::greater<int>());
+        values.pop_back();
+        return result;
+    }
+
+    std::string toString() const {
+        std::ostringstream output;
+        output << "[";
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            if (i != 0) {
+                output << ", ";
+            }
+            output << values[i];
+        }
+        output << "]";
+        return output.str();
+    }
+
+private:
+    std::vector<int> values;
+};
+
 struct BenchmarkResult {
     std::string containerName;
     std::string heapSnapshot;
@@ -201,12 +258,12 @@ double measureMilliseconds(Function function) {
     return std::chrono::duration<double, std::milli>(finish - start).count();
 }
 
-template <typename Store>
+template <typename Heap>
 BenchmarkResult runBenchmark(
     const std::string& containerName,
     const std::vector<int>& inputValues,
     const std::vector<int>& queries) {
-    MinHeap<Store> heap;
+    Heap heap;
     BenchmarkResult result;
     result.containerName = containerName;
     result.queries = queries.size();
@@ -242,15 +299,16 @@ void writeHeapLine(std::ofstream& output, const std::string& name, const std::st
     output << name << " : " << heap << '\n';
 }
 
-template <typename Store>
-void writeInteractiveHeap(std::ofstream& output, const std::string& name, const MinHeap<Store>& heap) {
+template <typename Heap>
+void writeInteractiveHeap(std::ofstream& output, const std::string& name, const Heap& heap) {
     writeHeapLine(output, name, heap.toString());
 }
 
 void saveInteractiveHeaps(
     const HeapVector& vectorHeap,
     const HeapList& listHeap,
-    const HeapMap& mapHeap) {
+    const HeapMap& mapHeap,
+    const STLMinHeap& stlHeap) {
     std::ofstream output("output.txt", std::ios::trunc);
     if (!output) {
         throw std::runtime_error("Impossible d'ouvrir output.txt en ecriture.");
@@ -260,6 +318,7 @@ void saveInteractiveHeaps(
     writeInteractiveHeap(output, "vector", vectorHeap);
     writeInteractiveHeap(output, "list", listHeap);
     writeInteractiveHeap(output, "map", mapHeap);
+    writeInteractiveHeap(output, "STL vector", stlHeap);
     output << "\nLa racine de chaque tas est son element minimum.\n";
 }
 
@@ -273,7 +332,7 @@ void saveBenchmarkResults(
 
     output << "BENCHMARK DES TAS MIN\n"
            << "Nombre d'elements inseres : " << count << "\n"
-           << "Les trois structures utilisent les memes valeurs aleatoires.\n"
+           << "Les quatre implementations utilisent les memes valeurs aleatoires.\n"
            << "Les durees mesurees n'incluent pas l'ecriture de ce fichier.\n\n";
 
     for (const BenchmarkResult& result : results) {
@@ -320,13 +379,14 @@ void runInteractiveMenu() {
     HeapVector vectorHeap;
     HeapList listHeap;
     HeapMap mapHeap;
+    STLMinHeap stlHeap;
 
     while (true) {
         std::cout << "\n===== MENU - TAS MIN =====\n"
-                  << "1. Inserer une valeur dans les trois tas\n"
-                  << "2. Rechercher une valeur dans les trois tas\n"
-                  << "3. Supprimer une valeur des trois tas\n"
-                  << "4. Supprimer le minimum des trois tas\n"
+                  << "1. Inserer une valeur dans les quatre tas\n"
+                  << "2. Rechercher une valeur dans les quatre tas\n"
+                  << "3. Supprimer une valeur des quatre tas\n"
+                  << "4. Supprimer le minimum des quatre tas\n"
                   << "5. Afficher les tas dans output.txt\n"
                   << "6. Lancer le benchmark aleatoire\n"
                   << "0. Quitter\n";
@@ -341,17 +401,20 @@ void runInteractiveMenu() {
             vectorHeap.insert(value);
             listHeap.insert(value);
             mapHeap.insert(value);
-            std::cout << "Valeur inseree dans les trois tas.\n";
+            stlHeap.insert(value);
+            std::cout << "Valeur inseree dans les quatre tas.\n";
         } else if (choice == 2) {
             const int value = readInteger("Valeur a rechercher : ");
             std::cout << "vector : " << (vectorHeap.contains(value) ? "trouvee" : "absente") << '\n'
                       << "list   : " << (listHeap.contains(value) ? "trouvee" : "absente") << '\n'
-                      << "map    : " << (mapHeap.contains(value) ? "trouvee" : "absente") << '\n';
+            << "map    : " << (mapHeap.contains(value) ? "trouvee" : "absente") << '\n'
+            << "STL    : " << (stlHeap.contains(value) ? "trouvee" : "absente") << '\n';
         } else if (choice == 3) {
             const int value = readInteger("Valeur a supprimer : ");
             std::cout << "vector : " << (vectorHeap.erase(value) ? "supprimee" : "absente") << '\n'
                       << "list   : " << (listHeap.erase(value) ? "supprimee" : "absente") << '\n'
-                      << "map    : " << (mapHeap.erase(value) ? "supprimee" : "absente") << '\n';
+            << "map    : " << (mapHeap.erase(value) ? "supprimee" : "absente") << '\n'
+            << "STL    : " << (stlHeap.erase(value) ? "supprimee" : "absente") << '\n';
         } else if (choice == 4) {
             if (vectorHeap.empty()) {
                 std::cout << "Les tas sont vides : aucun minimum a supprimer.\n";
@@ -359,10 +422,11 @@ void runInteractiveMenu() {
             }
             std::cout << "Minimum supprime : vector=" << vectorHeap.removeMinimum()
                       << ", list=" << listHeap.removeMinimum()
-                      << ", map=" << mapHeap.removeMinimum() << '\n';
+                      << ", map=" << mapHeap.removeMinimum()
+                      << ", STL=" << stlHeap.removeMinimum() << '\n';
         } else if (choice == 5) {
-            saveInteractiveHeaps(vectorHeap, listHeap, mapHeap);
-            std::cout << "Les trois tas ont ete ecrits dans output.txt.\n";
+            saveInteractiveHeaps(vectorHeap, listHeap, mapHeap, stlHeap);
+            std::cout << "Les quatre tas ont ete ecrits dans output.txt.\n";
         } else if (choice == 6) {
             const int requestedCount = readInteger("Nombre d'elements a tester (0 a 1000000) : ");
             if (requestedCount < 0 || requestedCount > 1000000) {
@@ -390,9 +454,10 @@ void runInteractiveMenu() {
             }
 
             std::vector<BenchmarkResult> results;
-            results.push_back(runBenchmark<VectorStore>("vector", values, queries));
-            results.push_back(runBenchmark<ListStore>("list", values, queries));
-            results.push_back(runBenchmark<MapStore>("map", values, queries));
+            results.push_back(runBenchmark<HeapVector>("vector", values, queries));
+            results.push_back(runBenchmark<HeapList>("list", values, queries));
+            results.push_back(runBenchmark<HeapMap>("map", values, queries));
+            results.push_back(runBenchmark<STLMinHeap>("STL vector", values, queries));
             saveBenchmarkResults(count, results);
 
             std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"

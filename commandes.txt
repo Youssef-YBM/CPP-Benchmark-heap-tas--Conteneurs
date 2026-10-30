@@ -14,18 +14,23 @@ Execution depuis l'invite de commandes Windows :
     benchmark_heap.exe
 
 Fonctionnement :
-- Le menu insere, recherche ou supprime une valeur dans les trois tas.
+- Le programme compare quatre tas min : implementation maison sur vector,
+  list et map, et implementation STL sur vector avec push_heap, pop_heap et
+  make_heap.
+- Le menu insere, recherche ou supprime une valeur dans les quatre tas.
 - Le choix 4 supprime le minimum de chaque tas.
 - Le choix 5 ecrit les tas courants dans output.txt.
-- Le choix 6 demande N, genere N valeurs aleatoires identiques pour les trois
-  implementations et mesure insertion, recherche, suppression de tous les
-  elements par minimum et preparation de l'affichage. Jusqu'a 20 recherches
-  reussies sont mesurees afin de limiter le temps du conteneur list.
+- Le choix 6 demande N, genere N valeurs aleatoires identiques pour les quatre
+  tas et mesure insertion, recherche, suppression de tous les elements par
+  minimum et preparation de l'affichage. Jusqu'a 20 recherches reussies sont
+  mesurees.
 - Les resultats du benchmark remplacent le contenu precedent de output.txt.
-- N doit etre compris entre 0 et 200000.
+- N doit etre compris entre 0 et 1000000. Les tas maison sur list et map
+  utilisent des acces par indice : les tres implementations maison peuvent
+  donc devenir tres lentes pour les grandes tailles.
 
 Remarque :
-Les trois variantes stockent les noeuds d'un tas binaire dans un tableau logique
-indexe. vector donne un acces direct, tandis que list et map ont des couts
-d'acces differents. Ce programme compare donc les couts de ces conteneurs dans
-la meme implementation de tas ; il ne s'agit pas d'un arbre de recherche binaire.
+La variante STL utilise les algorithmes de tas de la bibliotheque standard sur
+un vector. Les recherches et suppressions par valeur sont ajoutees pour offrir
+les memes operations aux quatre variantes. Il ne s'agit pas d'un arbre de
+recherche binaire.

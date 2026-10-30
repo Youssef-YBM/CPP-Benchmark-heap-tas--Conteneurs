@@ -17,6 +17,7 @@
 \definecolor{bleuclair}{HTML}{2F80C1}
 \definecolor{turquoise}{HTML}{159A9C}
 \definecolor{orange}{HTML}{E18A36}
+\definecolor{violet}{HTML}{7851A9}
 \definecolor{grisclair}{HTML}{F1F5F9}
 \pgfplotsset{compat=1.17}
 \titleformat{\section}
@@ -59,9 +60,8 @@
 \colorbox{grisclair}{%
   \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
     \textcolor{bleufonce}{\textbf{Comparaison.}}
-    Ce rapport compare les temps d'insertion, de recherche, de suppression
-    du minimum et d'affichage avec \texttt{vector}, \texttt{list} et
-    \texttt{map}.%
+    Ce rapport compare les tas maison (\texttt{vector}, \texttt{list},
+    \texttt{map}) avec les algorithmes de tas de la STL sur \texttt{vector}.%
   }%
 }
 
@@ -76,23 +76,30 @@
 
 \section{Résultats}
 
+Les trois tas maison utilisent respectivement \texttt{vector}, \texttt{list}
+et \texttt{map}. Le quatrième utilise le tas STL (\texttt{push\_heap},
+\texttt{pop\_heap}, \texttt{make\_heap}) avec \texttt{vector}. Temps en
+millisecondes ; chaque valeur est la médiane de cinq exécutions.
+
 \subsection{Insertion}
 
 \begin{table}[htbp]
 \centering
 \caption{Temps médian d'insertion (ms)}
 \label{tab:insertion}
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
-{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.004400 & 0.031400 & 0.037800 \\
-500  & 0.015700 & 0.640700 & 0.188000 \\
-1000 & 0.029100 & 2.938900 & 0.367700 \\
-2000 & 0.051300 & 14.957100 & 0.875000 \\
-5000 & 0.125200 & 128.559500 & 2.044300 \\
+100  & 0.003700 & 0.020600 & 0.026700 & 0.002500 \\
+500  & 0.009100 & 0.416000 & 0.117900 & 0.017600 \\
+1000 & 0.019200 & 1.832000 & 0.237600 & 0.013500 \\
+2000 & 0.033200 & 8.891400 & 0.504700 & 0.042100 \\
+5000 & 0.079300 & 79.828600 & 1.347200 & 0.077100 \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \subsection{Recherche}
@@ -101,17 +108,19 @@
 \centering
 \caption{Temps médian de recherche (ms)}
 \label{tab:recherche}
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
-{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.001000 & 0.022500 & 0.014700 \\
-500  & 0.002200 & 1.231700 & 0.132500 \\
-1000 & 0.004300 & 4.685800 & 0.280400 \\
-2000 & 0.008000 & 25.391200 & 0.894800 \\
-5000 & 0.019300 & 361.234600 & 2.830600 \\
+100  & 0.000700 & 0.018900 & 0.010600 & 0.000500 \\
+500  & 0.001700 & 0.832000 & 0.080000 & 0.001100 \\
+1000 & 0.002600 & 2.989800 & 0.188200 & 0.001600 \\
+2000 & 0.005400 & 18.786600 & 0.615800 & 0.003300 \\
+5000 & 0.012100 & 164.178800 & 1.760100 & 0.007200 \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \subsection{Suppression du minimum}
@@ -120,17 +129,19 @@
 \centering
 \caption{Temps médian de suppression répétée du minimum (ms)}
 \label{tab:suppression}
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
-{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.007200 & 0.039400 & 0.057400 \\
-500  & 0.034000 & 1.214800 & 0.455600 \\
-1000 & 0.070800 & 5.464300 & 1.124900 \\
-2000 & 0.159000 & 29.574400 & 3.522300 \\
-5000 & 0.451400 & 244.883200 & 10.347000 \\
+100  & 0.003800 & 0.027300 & 0.038300 & 0.002200 \\
+500  & 0.021700 & 0.760200 & 0.269200 & 0.011200 \\
+1000 & 0.045600 & 3.448800 & 0.722600 & 0.019500 \\
+2000 & 0.098100 & 16.658300 & 1.930500 & 0.039700 \\
+5000 & 0.280200 & 156.494100 & 7.054000 & 0.105400 \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \subsection{Affichage}
@@ -139,23 +150,26 @@
 \centering
 \caption{Temps médian de création de la chaîne d'affichage (ms)}
 \label{tab:affichage}
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\small
+\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
 \toprule
-{$N$} & {\texttt{vector}} & {\texttt{list}} & {\texttt{map}} \\
+{$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.026100 & 0.011900 & 0.010200 \\
-500  & 0.062800 & 0.259400 & 0.057800 \\
-1000 & 0.069200 & 0.966400 & 0.096600 \\
-2000 & 0.147700 & 6.062300 & 0.247500 \\
-5000 & 0.305800 & 50.326700 & 0.583100 \\
+100  & 0.020000 & 0.007900 & 0.006800 & 0.003000 \\
+500  & 0.033500 & 0.154900 & 0.030000 & 0.013000 \\
+1000 & 0.045700 & 0.611700 & 0.060800 & 0.048300 \\
+2000 & 0.080000 & 3.361700 & 0.143700 & 0.076800 \\
+5000 & 0.195000 & 28.400800 & 0.360100 & 0.168700 \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \section{Visualisation graphique}
 
-Temps en millisecondes. Les axes sont logarithmiques pour faciliter la
-comparaison entre les conteneurs.
+Les temps sont en millisecondes. La légende distingue les trois implémentations
+maison de la version STL. Les axes sont logarithmiques pour faciliter la
+comparaison.
 
 \pgfplotsset{
   benchmark axis/.style={
@@ -177,7 +191,7 @@ comparaison entre les conteneurs.
     legend style={
       at={(0.5,-0.25)},
       anchor=north,
-      legend columns=3,
+      legend columns=2,
       draw=none,
       font=\small
     },
@@ -203,6 +217,10 @@ comparaison entre les conteneurs.
   (100,0.0378) (500,0.1880) (1000,0.3677) (2000,0.8750) (5000,2.0443)
 };
 \addlegendentry{\texttt{map}}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (100,0.0025) (500,0.0176) (1000,0.0135) (2000,0.0421) (5000,0.0771)
+};
+\addlegendentry{\texttt{STL vector}}
 \end{axis}
 \end{tikzpicture}
 \caption{Temps médian d'insertion de $N$ éléments.}
@@ -226,6 +244,10 @@ comparaison entre les conteneurs.
   (100,0.0147) (500,0.1325) (1000,0.2804) (2000,0.8948) (5000,2.8306)
 };
 \addlegendentry{\texttt{map}}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (100,0.0005) (500,0.0011) (1000,0.0016) (2000,0.0033) (5000,0.0072)
+};
+\addlegendentry{\texttt{STL vector}}
 \end{axis}
 \end{tikzpicture}
 \caption{Temps médian pour jusqu'à 20 recherches de valeurs présentes.}
@@ -249,6 +271,10 @@ comparaison entre les conteneurs.
   (100,0.0574) (500,0.4556) (1000,1.1249) (2000,3.5223) (5000,10.3470)
 };
 \addlegendentry{\texttt{map}}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (100,0.0022) (500,0.0112) (1000,0.0195) (2000,0.0397) (5000,0.1054)
+};
+\addlegendentry{\texttt{STL vector}}
 \end{axis}
 \end{tikzpicture}
 \caption{Temps médian de suppression répétée du minimum.}
@@ -272,6 +298,10 @@ comparaison entre les conteneurs.
   (100,0.0102) (500,0.0578) (1000,0.0966) (2000,0.2475) (5000,0.5831)
 };
 \addlegendentry{\texttt{map}}
+\addplot[color=violet,mark=diamond*] coordinates {
+  (100,0.0030) (500,0.0130) (1000,0.0483) (2000,0.0768) (5000,0.1687)
+};
+\addlegendentry{\texttt{STL vector}}
 \end{axis}
 \end{tikzpicture}
 \caption{Temps médian de préparation de l'affichage du tas.}
@@ -280,9 +310,10 @@ comparaison entre les conteneurs.
 
 \section{Comparaison}
 
-\texttt{vector} est le plus rapide pour l'insertion, la recherche et la
-suppression du minimum. \texttt{map} arrive généralement en deuxième position,
-tandis que \texttt{list} est la plus lente pour les opérations du tas. Ces
-résultats s'expliquent par les accès par indice nécessaires au tas binaire.
+La version STL sur \texttt{vector} et le tas maison sur \texttt{vector}
+obtiennent les meilleurs résultats. À $N=5000$, la version STL est plus
+rapide pour la recherche et la suppression du minimum. Les variantes sur
+\texttt{map} sont plus lentes, et celles sur \texttt{list} le sont nettement
+plus à cause des accès par indice.
 
 \end{document}
