@@ -74,19 +74,19 @@
 
 \section{Résultats}
 
-Les temps sont exprimés en millisecondes. Les résultats à $N=1\,000$ et
-$N=1\,000\,000$ sont les médianes de cinq exécutions ; les chiffres à
-$N=100\,000\,000$ proviennent d'une seule exécution. L'extraction mesure le
-retrait successif des $N$ racines jusqu'à vider le tas. Les mêmes valeurs
-aléatoires sont utilisées pour les implémentations d'un même essai. Les
-cases « -- » signalent les tailles sans mesure conservée. Les tas sur
-\texttt{list} et \texttt{map} sont limités à $N\leq 5\,000$.
+Les temps sont exprimés en millisecondes. À $N=1\,000$ et $N=1\,000\,000$,
+les valeurs sont les médianes de cinq exécutions ; à $N=100\,000\,000$, une
+seule exécution est disponible : ces valeurs ne sont donc pas des médianes.
+L'extraction mesure le retrait successif des $N$ racines jusqu'à vider le
+tas. Les mêmes valeurs aléatoires sont utilisées pour les variantes d'un
+même essai. « -- » signifie qu'aucune mesure n'est disponible pour cette
+taille. Les tas sur \texttt{list} et \texttt{map} sont limités à $N\leq 5\,000$.
 
 \subsection{Tas min}
 
 \begin{table}[htbp]
 \centering
-\caption{Tas min : temps médian d'insertion (ms)}
+\caption{Tas min : temps d'insertion (ms)}
 \small
 \begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
@@ -104,7 +104,7 @@ cases « -- » signalent les tailles sans mesure conservée. Les tas sur
 
 \begin{table}[htbp]
 \centering
-\caption{Tas min : temps médian d'extraction des $N$ minimums (ms)}
+\caption{Tas min : temps d'extraction des $N$ minimums (ms)}
 \small
 \begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
@@ -124,7 +124,7 @@ cases « -- » signalent les tailles sans mesure conservée. Les tas sur
 
 \begin{table}[htbp]
 \centering
-\caption{Tas max : temps médian d'insertion (ms)}
+\caption{Tas max : temps d'insertion (ms)}
 \small
 \begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
@@ -142,7 +142,7 @@ cases « -- » signalent les tailles sans mesure conservée. Les tas sur
 
 \begin{table}[htbp]
 \centering
-\caption{Tas max : temps médian d'extraction des $N$ maximums (ms)}
+\caption{Tas max : temps d'extraction des $N$ maximums (ms)}
 \small
 \begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
@@ -161,36 +161,43 @@ cases « -- » signalent les tailles sans mesure conservée. Les tas sur
 \clearpage
 \section{Graphiques}
 
-Les tailles sont espacées régulièrement sur l'axe horizontal pour rester
-lisibles. L'axe vertical logarithmique permet de comparer les temps très
-différents, notamment ceux de \texttt{list} et \texttt{vector}.
+Les marqueurs montrent seulement les mesures réellement disponibles. Les
+tailles sur l'axe horizontal sont des catégories espacées régulièrement ;
+l'axe vertical est explicitement logarithmique pour rendre visibles les
+écarts de temps.
 
 \pgfplotsset{
   benchmark axis/.style={
     width=0.92\textwidth,
-    height=6.0cm,
+    height=7.0cm,
     xmode=linear,
     ymode=log,
+    log basis y=10,
+    ymin=0.01,
+    ymax=300000,
     xmin=0.7,
     xmax=6.3,
     xtick={1,2,3,4,5,6},
     xticklabels={1k,10k,100k,1M,10M,100M},
     xlabel={Nombre d'éléments $N$},
-    ylabel={Temps médian (ms)},
+    ylabel={Temps mesuré (ms, échelle logarithmique)},
+    ytick={0.01,0.1,1,10,100,1000,10000,100000},
+    yticklabels={$10^{-2}$,$10^{-1}$,$10^0$,$10^1$,$10^2$,$10^3$,$10^4$,$10^5$},
+    scaled y ticks=false,
     grid=both,
     major grid style={gray!30},
     minor grid style={gray!12},
     tick label style={font=\small},
     label style={font=\small\color{bleufonce}},
     legend style={
-      at={(0.5,-0.25)},
+      at={(0.5,-0.20)},
       anchor=north,
       legend columns=2,
       draw=none,
       font=\small
     },
     line width=1.1pt,
-    mark size=2.3pt
+    mark size=3.0pt
   }
 }
 
@@ -268,18 +275,27 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 
 \section{Comparaison}
 
-À $N=100\,000\,000$, l'insertion a pris \SI{1468.2544}{ms} pour le tas
-min maison/vector et \SI{1346.7741}{ms} avec la STL. Pour le tas max, les
-temps sont respectivement \SI{2252.8156}{ms} et \SI{2210.4433}{ms}.
-L'extraction complète a pris \SI{71711.1940}{ms} pour le tas min maison/vector
-contre \SI{178762.3025}{ms} avec la STL ; pour le tas max, \SI{74721.7195}{ms}
-et \SI{182454.1763}{ms}. Ces valeurs à 100 millions proviennent d'un seul
-essai et sont à interpréter comme des mesures ponctuelles, contrairement aux
-médianes à un million.
+À $N=1\,000\,000$, les médianes d'insertion sont proches : maison/STL
+\SI{13.3294}{ms}/\SI{11.9526}{ms} pour le tas min et
+\SI{12.6202}{ms}/\SI{12.0642}{ms} pour le tas max. Pour l'extraction, la
+variante maison est plus rapide sur le tas min
+(\SI{196.6093}{ms} contre \SI{224.0423}{ms}) ; sur le tas max, les temps sont
+\SI{161.7644}{ms} et \SI{158.4034}{ms}.
+
+À $N=100\,000\,000$, l'exécution enregistrée donne \SI{1468.2544}{ms} et
+\SI{1346.7741}{ms} en insertion min (maison/STL), puis
+\SI{2252.8156}{ms} et \SI{2210.4433}{ms} en insertion max. L'extraction
+complète mesurée est de \SI{71711.1940}{ms} et \SI{178762.3025}{ms} pour le
+tas min, puis \SI{74721.7195}{ms} et \SI{182454.1763}{ms} pour le tas max.
+Ce résultat ponctuel donne un écart inhabituellement grand entre les deux
+implémentations à l'extraction. Il ne concorde pas avec les faibles écarts
+mesurés à un million ; faute de répétitions à cette taille, il faut le
+considérer comme une mesure isolée, pas comme une tendance confirmée.
 
 Les tailles souhaitées pour le rapport sont $10^3$, $10^4$, $10^5$, $10^6$,
-$10^7$ et $10^8$. Les valeurs mesurées et conservées sont affichées ; les
-autres cellules restent vides plutôt que de présenter des estimations. Le
+$10^7$ et $10^8$. Les seules mesures conservées pour ces tailles sont celles
+à $10^3$, $10^6$ et $10^8$ ; les autres cellules restent marquées « -- »,
+sans estimation ni interpolation. Le
 programme accepte une saisie jusqu'à $10^9$ éléments, mais vérifie la mémoire
 disponible avant de lancer le benchmark.
 
