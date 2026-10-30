@@ -41,6 +41,7 @@ class ListStore {
 public:
     std::size_t size() const { return data.size(); }
     bool empty() const { return data.empty(); }
+    void reserve(std::size_t) {}
 
     int& at(std::size_t index) {
         return *std::next(data.begin(), static_cast<std::ptrdiff_t>(index));
@@ -62,6 +63,7 @@ class MapStore {
 public:
     std::size_t size() const { return data.size(); }
     bool empty() const { return data.empty(); }
+    void reserve(std::size_t) {}
     int& at(std::size_t index) { return data.at(index); }
     const int& at(std::size_t index) const { return data.at(index); }
 
@@ -299,9 +301,11 @@ BenchmarkResult runBenchmark(
     const std::vector<int>& inputValues) {
     Heap heap;
     BenchmarkResult result;
+    result.heapType = containerName.find("max") != std::string::npos ? "max" : "min";
     result.containerName = containerName;
 
     result.insertionMs = measureMilliseconds([&]() {
+        heap.reserve(inputValues.size());
         for (int value : inputValues) {
             heap.insert(value);
         }
@@ -309,11 +313,29 @@ BenchmarkResult runBenchmark(
 
     result.extractionMs = measureMilliseconds([&]() {
         while (!heap.empty()) {
-            heap.removeMinimum();
+            heap.extractTop();
         }
     });
 
     return result;
+}
+
+bool hasEnoughMemoryForBenchmark(std::size_t count) {
+#ifdef _WIN32
+    MEMORYSTATUSEX memoryStatus{};
+    memoryStatus.dwLength = sizeof(memoryStatus);
+    if (!GlobalMemoryStatusEx(&memoryStatus)) {
+        throw std::runtime_error("Impossible de verifier la memoire disponible.");
+    }
+
+    constexpr std::size_t reserveBytes = 512ULL * 1024ULL * 1024ULL;
+    const unsigned long long requiredBytes =
+        static_cast<unsigned long long>(count) * sizeof(int) * 2ULL + reserveBytes;
+    return memoryStatus.ullAvailPhys >= requiredBytes;
+#else
+    (void)count;
+    return true;
+#endif
 }
 
 void writeHeapLine(std::ofstream& output, const std::string& name, const std::string& heap) {
@@ -329,18 +351,26 @@ void saveInteractiveHeaps(
     const HeapVector& vectorHeap,
     const HeapList& listHeap,
     const HeapMap& mapHeap,
-    const STLMinHeap& stlHeap) {
+    const STLMinHeap& stlHeap,
+    const HeapMaxVector& maxVectorHeap,
+    const HeapMaxList& maxListHeap,
+    const HeapMaxMap& maxMapHeap,
+    const STLMaxHeap& stlMaxHeap) {
     std::ofstream output("output.txt", std::ios::trunc);
     if (!output) {
         throw std::runtime_error("Impossible d'ouvrir output.txt en ecriture.");
     }
 
-    output << "Affichage des tas min (ordre interne du tableau du tas)\n\n";
-    writeInteractiveHeap(output, "vector", vectorHeap);
-    writeInteractiveHeap(output, "list", listHeap);
-    writeInteractiveHeap(output, "map", mapHeap);
-    writeInteractiveHeap(output, "STL vector", stlHeap);
-    output << "\nLa racine de chaque tas est son element minimum.\n";
+    output << "Affichage des tas min et max (ordre interne du tas)\n\n";
+    writeInteractiveHeap(output, "min maison/vector", vectorHeap);
+    writeInteractiveHeap(output, "min maison/list", listHeap);
+    writeInteractiveHeap(output, "min maison/map", mapHeap);
+    writeInteractiveHeap(output, "min STL/vector", stlHeap);
+    writeInteractiveHeap(output, "max maison/vector", maxVectorHeap);
+    writeInteractiveHeap(output, "max maison/list", maxListHeap);
+    writeInteractiveHeap(output, "max maison/map", maxMapHeap);
+    writeInteractiveHeap(output, "max STL/vector", stlMaxHeap);
+    output << "\nLa racine contient le minimum ou le maximum selon le type de tas.\n";
 }
 
 void saveBenchmarkResults(
@@ -351,15 +381,15 @@ void saveBenchmarkResults(
         throw std::runtime_error("Impossible d'ouvrir output.txt en ecriture.");
     }
 
-    output << "BENCHMARK DES TAS MIN\n"
+    output << "BENCHMARK DES TAS MIN ET MAX\n"
            << "Nombre d'elements inseres : " << count << "\n"
-           << "Comparaison des temps d'insertion et d'extraction du minimum.\n"
-           << "Les implementations mesurees utilisent les memes valeurs.\n"
+           << "Comparaison de l'insertion et de l'extraction de la racine.\n"
+           << "Les tas de chaque type utilisent les memes valeurs aleatoires.\n"
            << "Les temps n'incluent ni la generation des valeurs ni ce fichier.\n"
            << "Les tas maison sur list et map sont limites a 5000 elements.\n\n";
 
     for (const BenchmarkResult& result : results) {
-        output << "=== Implementation : " << result.containerName << " ===\n"
+        output << "=== Tas " << result.heapType << " - " << result.containerName << " ===\n"
                << std::fixed << std::setprecision(6)
                << "Insertion (" << count << " elements) : "
                << result.insertionMs << " ms\n"
