@@ -27,6 +27,7 @@ class VectorStore {
 public:
     std::size_t size() const { return data.size(); }
     bool empty() const { return data.empty(); }
+    void reserve(std::size_t count) { data.reserve(count); }
     int& at(std::size_t index) { return data.at(index); }
     const int& at(std::size_t index) const { return data.at(index); }
     void pushBack(int value) { data.push_back(value); }
@@ -81,7 +82,7 @@ private:
     std::map<std::size_t, int> data;
 };
 
-// Tas min generique : la racine (indice 0) contient toujours le minimum.
+// Tas generique : le comparateur determine si la racine est le minimum ou maximum.
 template <typename Store, typename Compare>
 class BinaryHeap {
 public:
@@ -298,10 +299,11 @@ double measureMilliseconds(Function function) {
 template <typename Heap>
 BenchmarkResult runBenchmark(
     const std::string& containerName,
+    const std::string& heapType,
     const std::vector<int>& inputValues) {
     Heap heap;
     BenchmarkResult result;
-    result.heapType = containerName.find("max") != std::string::npos ? "max" : "min";
+    result.heapType = heapType;
     result.containerName = containerName;
 
     result.insertionMs = measureMilliseconds([&]() {
@@ -393,7 +395,7 @@ void saveBenchmarkResults(
                << std::fixed << std::setprecision(6)
                << "Insertion (" << count << " elements) : "
                << result.insertionMs << " ms\n"
-               << "Extraction de tous les minimums (" << count
+               << "Extraction de toutes les racines (" << count
                << " extractions) : " << result.extractionMs << " ms\n"
                << "Temps moyen par extraction : ";
         if (count == 0) {
