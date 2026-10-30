@@ -364,9 +364,9 @@ void runInteractiveMenu() {
             saveInteractiveHeaps(vectorHeap, listHeap, mapHeap);
             std::cout << "Les trois tas ont ete ecrits dans output.txt.\n";
         } else if (choice == 6) {
-            const int requestedCount = readInteger("Nombre d'elements a tester (0 a 200000) : ");
-            if (requestedCount < 0 || requestedCount > 200000) {
-                std::cout << "Le nombre doit etre compris entre 0 et 200000.\n";
+            const int requestedCount = readInteger("Nombre d'elements a tester (0 a 1000000) : ");
+            if (requestedCount < 0 || requestedCount > 1000000) {
+                std::cout << "Le nombre doit etre compris entre 0 et 1000000.\n";
                 continue;
             }
 
