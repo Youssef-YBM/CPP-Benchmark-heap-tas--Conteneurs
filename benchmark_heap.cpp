@@ -241,13 +241,8 @@ private:
 
 struct BenchmarkResult {
     std::string containerName;
-    std::string heapSnapshot;
     double insertionMs = 0.0;
-    double searchMs = 0.0;
     double extractionMs = 0.0;
-    double displayMs = 0.0;
-    std::size_t queries = 0;
-    std::size_t found = 0;
 };
 
 template <typename Function>
@@ -261,29 +256,15 @@ double measureMilliseconds(Function function) {
 template <typename Heap>
 BenchmarkResult runBenchmark(
     const std::string& containerName,
-    const std::vector<int>& inputValues,
-    const std::vector<int>& queries) {
+    const std::vector<int>& inputValues) {
     Heap heap;
     BenchmarkResult result;
     result.containerName = containerName;
-    result.queries = queries.size();
 
     result.insertionMs = measureMilliseconds([&]() {
         for (int value : inputValues) {
             heap.insert(value);
         }
-    });
-
-    result.searchMs = measureMilliseconds([&]() {
-        for (int value : queries) {
-            if (heap.contains(value)) {
-                ++result.found;
-            }
-        }
-    });
-
-    result.displayMs = measureMilliseconds([&]() {
-        result.heapSnapshot = heap.toString();
     });
 
     result.extractionMs = measureMilliseconds([&]() {
@@ -332,27 +313,16 @@ void saveBenchmarkResults(
 
     output << "BENCHMARK DES TAS MIN\n"
            << "Nombre d'elements inseres : " << count << "\n"
-           << "Les quatre implementations utilisent les memes valeurs aleatoires.\n"
-           << "Les durees mesurees n'incluent pas l'ecriture de ce fichier.\n\n";
+           << "Comparaison des temps d'insertion et d'extraction du minimum.\n"
+           << "Les implementations mesurees utilisent les memes valeurs.\n"
+           << "Les temps n'incluent ni la generation des valeurs ni ce fichier.\n"
+           << "Les tas maison sur list et map sont limites a 5000 elements.\n\n";
 
     for (const BenchmarkResult& result : results) {
-        output << "=== Conteneur : " << result.containerName << " ===\n"
-               << "Tas apres insertion (avant suppressions) : "
-               << result.heapSnapshot << '\n'
-               << "Minimum : ";
-        if (count == 0) {
-            output << "aucun (tas vide)\n";
-        } else {
-            const std::string& heap = result.heapSnapshot;
-            const std::size_t firstValue = heap.find_first_not_of("[] ");
-            const std::size_t endValue = heap.find_first_of(",]", firstValue);
-            output << heap.substr(firstValue, endValue - firstValue) << '\n';
-        }
-
-        output << std::fixed << std::setprecision(6)
-               << "Insertion (" << count << " elements) : " << result.insertionMs << " ms\n"
-               << "Recherche (" << result.queries << " requetes, "
-               << result.found << " trouvees) : " << result.searchMs << " ms\n"
+        output << "=== Implementation : " << result.containerName << " ===\n"
+               << std::fixed << std::setprecision(6)
+               << "Insertion (" << count << " elements) : "
+               << result.insertionMs << " ms\n"
                << "Extraction de tous les minimums (" << count
                << " extractions) : " << result.extractionMs << " ms\n"
                << "Temps moyen par extraction : ";
@@ -361,9 +331,7 @@ void saveBenchmarkResults(
         } else {
             output << result.extractionMs * 1000.0 / count << " us\n";
         }
-
-        output
-               << "Preparation de l'affichage : " << result.displayMs << " ms\n\n";
+        output << '\n';
     }
 }
 
@@ -453,29 +421,30 @@ void runInteractiveMenu() {
                 values.push_back(distribution(generator));
             }
 
-            const std::size_t queryCount = std::min<std::size_t>(count, 20);
-            std::vector<int> queries;
-            queries.reserve(queryCount);
-            for (std::size_t i = 0; i < queryCount; ++i) {
-                std::uniform_int_distribution<std::size_t> pick(0, count - 1);
-                queries.push_back(values[pick(generator)]);
-            }
-
             std::vector<BenchmarkResult> results;
-            results.push_back(runBenchmark<HeapVector>("vector", values, queries));
-            results.push_back(runBenchmark<HeapList>("list", values, queries));
-            results.push_back(runBenchmark<HeapMap>("map", values, queries));
-            results.push_back(runBenchmark<STLMinHeap>("STL vector", values, queries));
+            results.push_back(runBenchmark<HeapVector>("Maison / vector", values));
+            if (count <= 5000) {
+                results.push_back(runBenchmark<HeapList>("Maison / list", values));
+                results.push_back(runBenchmark<HeapMap>("Maison / map", values));
+            } else {
+                std::cout << "Pour N > 5000, list et map sont ignores : "
+                             "leur acces indexe rend le tas trop lent.\n";
+            }
+            results.push_back(runBenchmark<STLMinHeap>("STL / vector", values));
             saveBenchmarkResults(count, results);
 
             std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
                       << std::fixed << std::setprecision(6);
             for (const BenchmarkResult& result : results) {
                 std::cout << result.containerName
-                          << " : insertion " << result.insertionMs << " ms, recherche "
-                          << result.searchMs << " ms, extraction de " << count
-                          << " minimums " << result.extractionMs << " ms, affichage "
-                          << result.displayMs << " ms.\n";
+                          << " : insertion " << result.insertionMs
+                          << " ms, extraction des " << count << " minimums "
+                          << result.extractionMs << " ms";
+                if (count != 0) {
+                    std::cout << " (" << result.extractionMs * 1000.0 / count
+                              << " us par extraction)";
+                }
+                std::cout << ".\n";
             }
         } else {
             std::cout << "Choix invalide.\n";

@@ -1,39 +1,17 @@
-﻿COMPARAISON TAS MAISON ET STL - INSERTION / EXTRACTION
-Machine : MSI Stealth GS66 12UGS | Intel Core i7-12700H | NVIDIA RTX 3070 Ti | 16 Go DDR5
-Medianes de cinq essais. Extraction totale : N retraits du minimum. Temps moyen en microsecondes.
+BENCHMARK DES TAS MIN
+Nombre d'elements inseres : 10000
+Comparaison des temps d'insertion et d'extraction du minimum.
+Les implementations mesurees utilisent les memes valeurs.
+Les temps n'incluent ni la generation des valeurs ni ce fichier.
+Les tas maison sur list et map sont limites a 5000 elements.
 
-N = 100
-Implementation | Insertion ms | Extraction totale ms | Extraction moyenne us
-vector | 0.0037 | 0.0038 | 0.038
-list | 0.0206 | 0.0273 | 0.273
-map | 0.0267 | 0.0383 | 0.383
-STL vector | 0.0025 | 0.0022 | 0.022
+=== Implementation : Maison / vector ===
+Insertion (10000 elements) : 0.171200 ms
+Extraction de tous les minimums (10000 extractions) : 0.728700 ms
+Temps moyen par extraction : 0.072870 us
 
-N = 500
-Implementation | Insertion ms | Extraction totale ms | Extraction moyenne us
-vector | 0.0091 | 0.0217 | 0.0434
-list | 0.416 | 0.7602 | 1.5204
-map | 0.1179 | 0.2692 | 0.5384
-STL vector | 0.0176 | 0.0112 | 0.0224
-
-N = 1000
-Implementation | Insertion ms | Extraction totale ms | Extraction moyenne us
-vector | 0.0192 | 0.0456 | 0.0456
-list | 1.832 | 3.4488 | 3.4488
-map | 0.2376 | 0.7226 | 0.7226
-STL vector | 0.0135 | 0.0195 | 0.0195
-
-N = 2000
-Implementation | Insertion ms | Extraction totale ms | Extraction moyenne us
-vector | 0.0332 | 0.0981 | 0.04905
-list | 8.8914 | 16.6583 | 8.32915
-map | 0.5047 | 1.9305 | 0.96525
-STL vector | 0.0421 | 0.0397 | 0.01985
-
-N = 5000
-Implementation | Insertion ms | Extraction totale ms | Extraction moyenne us
-vector | 0.0793 | 0.2802 | 0.05604
-list | 79.8286 | 156.4941 | 31.29882
-map | 1.3472 | 7.054 | 1.4108
-STL vector | 0.0771 | 0.1054 | 0.02108
+=== Implementation : STL / vector ===
+Insertion (10000 elements) : 0.161400 ms
+Extraction de tous les minimums (10000 extractions) : 0.249100 ms
+Temps moyen par extraction : 0.024910 us
 
