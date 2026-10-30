@@ -355,6 +355,14 @@ void saveBenchmarkResults(
                << result.found << " trouvees) : " << result.searchMs << " ms\n"
                << "Extraction de tous les minimums (" << count
                << " extractions) : " << result.extractionMs << " ms\n"
+               << "Temps moyen par extraction : ";
+        if (count == 0) {
+            output << "n/a\n";
+        } else {
+            output << result.extractionMs * 1000.0 / count << " us\n";
+        }
+
+        output
                << "Preparation de l'affichage : " << result.displayMs << " ms\n\n";
     }
 }
@@ -465,8 +473,8 @@ void runInteractiveMenu() {
             for (const BenchmarkResult& result : results) {
                 std::cout << result.containerName
                           << " : insertion " << result.insertionMs << " ms, recherche "
-                          << result.searchMs << " ms, extraction des minimums "
-                          << result.extractionMs << " ms, affichage "
+                          << result.searchMs << " ms, extraction de " << count
+                          << " minimums " << result.extractionMs << " ms, affichage "
                           << result.displayMs << " ms.\n";
             }
         } else {
