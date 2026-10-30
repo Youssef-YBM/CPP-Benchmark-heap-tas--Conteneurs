@@ -79,10 +79,11 @@
 
 Les trois tas maison utilisent respectivement \texttt{vector}, \texttt{list}
 et \texttt{map}. Le quatrième utilise les algorithmes STL
-(\texttt{push\_heap}, \texttt{pop\_heap}) avec \texttt{vector}. Chaque valeur
-est la médiane de cinq exécutions, en millisecondes. À $N=1\,000\,000$,
-seuls les deux tas sur \texttt{vector} sont mesurés ; \texttt{list} et
-\texttt{map} sont limités à $N\leq 5\,000$.
+(\texttt{push\_heap}, \texttt{pop\_heap}) avec \texttt{vector}. Les temps sont
+en millisecondes : médiane de cinq exécutions jusqu'à $N=5\,000$ et de onze
+exécutions à $N=1\,000\,000$. À un million, seuls les deux tas sur
+\texttt{vector} sont mesurés ; \texttt{list} et \texttt{map} sont limités à
+$N\leq 5\,000$.
 
 \subsection{Insertion}
 
@@ -95,12 +96,12 @@ seuls les deux tas sur \texttt{vector} sont mesurés ; \texttt{list} et
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.003700 & 0.020600 & 0.026700 & 0.002500 \\
-500  & 0.009100 & 0.416000 & 0.117900 & 0.017600 \\
-1000 & 0.019200 & 1.832000 & 0.237600 & 0.013500 \\
-2000 & 0.033200 & 8.891400 & 0.504700 & 0.042100 \\
-5000 & 0.079300 & 79.828600 & 1.347200 & 0.077100 \\
-1000000 & 14.995500 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 14.878300 \\
+100  & 0.005800 & 0.028000 & 0.034200 & 0.004700 \\
+500  & 0.014400 & 0.539200 & 0.153800 & 0.013700 \\
+1000 & 0.025100 & 2.351200 & 0.405000 & 0.022800 \\
+2000 & 0.041300 & 10.930200 & 0.724400 & 0.047000 \\
+5000 & 0.106400 & 94.656600 & 1.524400 & 0.101200 \\
+1000000 & 13.937200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 13.774500 \\
 \bottomrule
 \end{tabular}
 \normalsize
@@ -117,12 +118,12 @@ seuls les deux tas sur \texttt{vector} sont mesurés ; \texttt{list} et
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100  & 0.003800 & 0.027300 & 0.038300 & 0.002200 \\
-500  & 0.021700 & 0.760200 & 0.269200 & 0.011200 \\
-1000 & 0.045600 & 3.448800 & 0.722600 & 0.019500 \\
-2000 & 0.098100 & 16.658300 & 1.930500 & 0.039700 \\
-5000 & 0.280200 & 156.494100 & 7.054000 & 0.105400 \\
-1000000 & 162.302400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 148.716900 \\
+100  & 0.004600 & 0.032500 & 0.050700 & 0.002500 \\
+500  & 0.025400 & 0.903500 & 0.353700 & 0.013100 \\
+1000 & 0.062700 & 4.425300 & 0.912300 & 0.023700 \\
+2000 & 0.128400 & 21.920600 & 2.367300 & 0.043000 \\
+5000 & 0.357400 & 176.770500 & 8.665400 & 0.119700 \\
+1000000 & 115.748400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 96.320900 \\
 \bottomrule
 \end{tabular}
 \normalsize
@@ -168,21 +169,21 @@ Les temps sont en millisecondes et les axes verticaux sont logarithmiques.
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
 \addplot[color=bleufonce,mark=*] coordinates {
-  (100,0.0037) (500,0.0091) (1000,0.0192) (2000,0.0332) (5000,0.0793)
-  (1000000,14.9955)
+  (100,0.0058) (500,0.0144) (1000,0.0251) (2000,0.0413) (5000,0.1064)
+  (1000000,13.9372)
 };
 \addlegendentry{\texttt{maison/vector}}
 \addplot[color=turquoise,mark=square*] coordinates {
-  (100,0.0206) (500,0.4160) (1000,1.8320) (2000,8.8914) (5000,79.8286)
+  (100,0.0280) (500,0.5392) (1000,2.3512) (2000,10.9302) (5000,94.6566)
 };
 \addlegendentry{\texttt{maison/list}}
 \addplot[color=orange,mark=triangle*] coordinates {
-  (100,0.0267) (500,0.1179) (1000,0.2376) (2000,0.5047) (5000,1.3472)
+  (100,0.0342) (500,0.1538) (1000,0.4050) (2000,0.7244) (5000,1.5244)
 };
 \addlegendentry{\texttt{maison/map}}
 \addplot[color=violet,mark=diamond*] coordinates {
-  (100,0.0025) (500,0.0176) (1000,0.0135) (2000,0.0421) (5000,0.0771)
-  (1000000,14.8783)
+  (100,0.0047) (500,0.0137) (1000,0.0228) (2000,0.0470) (5000,0.1012)
+  (1000000,13.7745)
 };
 \addlegendentry{\texttt{STL vector}}
 \end{axis}
@@ -197,21 +198,21 @@ Les temps sont en millisecondes et les axes verticaux sont logarithmiques.
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
 \addplot[color=bleufonce,mark=*] coordinates {
-  (100,0.0038) (500,0.0217) (1000,0.0456) (2000,0.0981) (5000,0.2802)
-  (1000000,162.3024)
+  (100,0.0046) (500,0.0254) (1000,0.0627) (2000,0.1284) (5000,0.3574)
+  (1000000,115.7484)
 };
 \addlegendentry{\texttt{maison/vector}}
 \addplot[color=turquoise,mark=square*] coordinates {
-  (100,0.0273) (500,0.7602) (1000,3.4488) (2000,16.6583) (5000,156.4941)
+  (100,0.0325) (500,0.9035) (1000,4.4253) (2000,21.9206) (5000,176.7705)
 };
 \addlegendentry{\texttt{maison/list}}
 \addplot[color=orange,mark=triangle*] coordinates {
-  (100,0.0383) (500,0.2692) (1000,0.7226) (2000,1.9305) (5000,7.0540)
+  (100,0.0507) (500,0.3537) (1000,0.9123) (2000,2.3673) (5000,8.6654)
 };
 \addlegendentry{\texttt{maison/map}}
 \addplot[color=violet,mark=diamond*] coordinates {
-  (100,0.0022) (500,0.0112) (1000,0.0195) (2000,0.0397) (5000,0.1054)
-  (1000000,148.7169)
+  (100,0.0025) (500,0.0131) (1000,0.0237) (2000,0.0430) (5000,0.1197)
+  (1000000,96.3209)
 };
 \addlegendentry{\texttt{STL vector}}
 \end{axis}
@@ -222,11 +223,15 @@ Les temps sont en millisecondes et les axes verticaux sont logarithmiques.
 
 \section{Comparaison}
 
-À $N=1\,000\,000$, l'insertion prend \SI{14.8783}{ms} avec la STL et
-\SI{14.9955}{ms} avec le tas maison sur \texttt{vector}. L'extraction des
-un million de minimums prend respectivement \SI{148.7169}{ms} et
-\SI{162.3024}{ms}, soit environ \SI{0.1487}{\micro\second} et
-\SI{0.1623}{\micro\second} par extraction. Les implémentations sur
+À $N=1\,000\,000$, l'insertion prend \SI{13.7745}{ms} avec la STL et
+\SI{13.9372}{ms} avec le tas maison sur \texttt{vector}. L'extraction des
+un million de minimums prend respectivement \SI{96.3209}{ms} et
+\SI{115.7484}{ms}, soit environ \SI{0.0963}{\micro\second} et
+\SI{0.1157}{\micro\second} par extraction. Les implémentations sur
 \texttt{list} et \texttt{map} ne sont pas exécutées à cette taille.
+
+L'extraction indiquée est le temps total pour retirer les $N$ minimums,
+et non le temps d'un seul retrait. Les temps moyens par retrait sont fournis
+dans les résultats CSV.
 
 \end{document}

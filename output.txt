@@ -1,27 +1,17 @@
 BENCHMARK DES TAS MIN
-Nombre d'elements inseres : 5000
+Nombre d'elements inseres : 10000
 Comparaison des temps d'insertion et d'extraction du minimum.
 Les implementations mesurees utilisent les memes valeurs.
 Les temps n'incluent ni la generation des valeurs ni ce fichier.
 Les tas maison sur list et map sont limites a 5000 elements.
 
 === Implementation : Maison / vector ===
-Insertion (5000 elements) : 0.099300 ms
-Extraction de tous les minimums (5000 extractions) : 0.352900 ms
-Temps moyen par extraction : 0.070580 us
-
-=== Implementation : Maison / list ===
-Insertion (5000 elements) : 93.148700 ms
-Extraction de tous les minimums (5000 extractions) : 171.781800 ms
-Temps moyen par extraction : 34.356360 us
-
-=== Implementation : Maison / map ===
-Insertion (5000 elements) : 1.377400 ms
-Extraction de tous les minimums (5000 extractions) : 7.420300 ms
-Temps moyen par extraction : 1.484060 us
+Insertion (10000 elements) : 0.399500 ms
+Extraction de tous les minimums (10000 extractions) : 0.903400 ms
+Temps moyen par extraction : 0.090340 us
 
 === Implementation : STL / vector ===
-Insertion (5000 elements) : 0.075600 ms
-Extraction de tous les minimums (5000 extractions) : 0.109200 ms
-Temps moyen par extraction : 0.021840 us
+Insertion (10000 elements) : 0.231300 ms
+Extraction de tous les minimums (10000 extractions) : 0.357800 ms
+Temps moyen par extraction : 0.035780 us
 

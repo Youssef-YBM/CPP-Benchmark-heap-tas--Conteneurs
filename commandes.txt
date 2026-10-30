@@ -20,17 +20,16 @@ Fonctionnement :
 - Le menu insere, recherche ou supprime une valeur dans les quatre tas.
 - Le choix 4 supprime le minimum de chaque tas.
 - Le choix 5 ecrit les tas courants dans output.txt.
-- Le choix 6 demande N, genere N valeurs aleatoires identiques pour les quatre
-  tas et mesure insertion, recherche, extraction de tous les minimums par
-  minimum et preparation de l'affichage. Jusqu'a 20 recherches reussies sont
-  mesurees.
+- Le choix 6 demande N, genere N valeurs aleatoires identiques et mesure
+  uniquement l'insertion et l'extraction de tous les minimums.
+- Jusqu'a 5000 elements, le benchmark mesure les quatre variantes. Au-dela,
+  il mesure seulement les tas maison/vector et STL/vector.
 - Les resultats du benchmark remplacent le contenu precedent de output.txt.
-- N doit etre compris entre 0 et 1000000. Les tas maison sur list et map
-  utilisent des acces par indice : les tres implementations maison peuvent
-  donc devenir tres lentes pour les grandes tailles.
+- N doit etre compris entre 0 et 1000000. Les variantes list et map sont
+  ignorees au-dela de 5000 elements en raison du cout de leurs acces par indice.
 
 Remarque :
 La variante STL utilise les algorithmes de tas de la bibliotheque standard sur
-un vector. Les recherches et suppressions par valeur sont ajoutees pour offrir
-les memes operations aux quatre variantes. Il ne s'agit pas d'un arbre de
-recherche binaire.
+un vector. Les recherches et suppressions interactives par valeur sont ajoutees
+pour offrir les memes operations dans le menu. L'extraction du benchmark est
+le retrait repete du minimum jusqu'a vider le tas.
