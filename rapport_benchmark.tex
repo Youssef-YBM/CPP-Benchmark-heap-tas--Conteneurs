@@ -74,12 +74,13 @@
 
 \section{Résultats}
 
-Les temps sont exprimés en millisecondes et correspondent à la médiane de
-cinq exécutions. L'extraction mesure le retrait successif des $N$ racines,
-jusqu'à vider le tas. Les mêmes valeurs aléatoires sont utilisées pour les
-implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
-\texttt{vector} sont mesurées ; les tas indexés sur \texttt{list} et
-\texttt{map} sont limités à $N\leq 5\,000$.
+Les temps sont exprimés en millisecondes. Les résultats à $N=1\,000$ et
+$N=1\,000\,000$ sont les médianes de cinq exécutions ; les chiffres à
+$N=100\,000\,000$ proviennent d'une seule exécution. L'extraction mesure le
+retrait successif des $N$ racines jusqu'à vider le tas. Les mêmes valeurs
+aléatoires sont utilisées pour les implémentations d'un même essai. Les
+cases « -- » signalent les tailles sans mesure conservée. Les tas sur
+\texttt{list} et \texttt{map} sont limités à $N\leq 5\,000$.
 
 \subsection{Tas min}
 
@@ -87,16 +88,16 @@ implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
 \centering
 \caption{Tas min : temps médian d'insertion (ms)}
 \small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100     & 0.002200 & 0.034200 & 0.036000 & 0.001500 \\
-500     & 0.009200 & 0.499600 & 0.199000 & 0.006900 \\
-1000    & 0.019000 & 2.427200 & 0.349400 & 0.014700 \\
-2000    & 0.031200 & 10.451100 & 0.633900 & 0.025300 \\
-5000    & 0.072900 & 84.862000 & 1.601300 & 0.061000 \\
-1000000 & 13.329400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 11.952600 \\
+1000      & 0.019000 & 2.427200 & 0.349400 & 0.014700 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 13.329400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 11.952600 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 1468.254400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 1346.774100 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -105,16 +106,16 @@ implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
 \centering
 \caption{Tas min : temps médian d'extraction des $N$ minimums (ms)}
 \small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100     & 0.006100 & 0.027600 & 0.043100 & 0.002300 \\
-500     & 0.027200 & 0.933400 & 0.340900 & 0.013600 \\
-1000    & 0.061700 & 4.353200 & 0.855100 & 0.029200 \\
-2000    & 0.124900 & 18.637500 & 2.187900 & 0.051100 \\
-5000    & 0.328600 & 164.322600 & 7.136000 & 0.137000 \\
-1000000 & 196.609300 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 224.042300 \\
+1000      & 0.061700 & 4.353200 & 0.855100 & 0.029200 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 196.609300 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 224.042300 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 71711.194000 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 178762.302500 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -125,16 +126,16 @@ implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
 \centering
 \caption{Tas max : temps médian d'insertion (ms)}
 \small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100     & 0.001500 & 0.018400 & 0.023200 & 0.001600 \\
-500     & 0.007100 & 0.508900 & 0.133100 & 0.006800 \\
-1000    & 0.013000 & 1.986900 & 0.312800 & 0.012700 \\
-2000    & 0.025400 & 9.498000 & 0.589800 & 0.025500 \\
-5000    & 0.063200 & 98.962800 & 1.483000 & 0.060200 \\
-1000000 & 12.620200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 12.064200 \\
+1000      & 0.013000 & 1.986900 & 0.312800 & 0.012700 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 12.620200 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 12.064200 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 2252.815600 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 2210.443300 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -143,16 +144,16 @@ implémentations d'un même essai. À $N=1\,000\,000$, seules les variantes sur
 \centering
 \caption{Tas max : temps médian d'extraction des $N$ maximums (ms)}
 \small
-\begin{tabular}{r S[table-format=3.6] S[table-format=3.6] S[table-format=3.6] S[table-format=3.6]}
+\begin{tabular}{r S[table-format=6.6] S[table-format=6.6] S[table-format=6.6] S[table-format=6.6]}
 \toprule
 {$N$} & {\texttt{maison/vector}} & {\texttt{maison/list}} & {\texttt{maison/map}} & {\texttt{STL/vector}} \\
 \midrule
-100     & 0.003900 & 0.026700 & 0.041200 & 0.002400 \\
-500     & 0.026800 & 0.890000 & 0.313400 & 0.013500 \\
-1000    & 0.052500 & 4.029200 & 0.908500 & 0.022800 \\
-2000    & 0.113700 & 18.773400 & 2.196400 & 0.056500 \\
-5000    & 0.308800 & 170.574900 & 7.886300 & 0.125600 \\
-1000000 & 161.764400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 158.403400 \\
+1000      & 0.052500 & 4.029200 & 0.908500 & 0.022800 \\
+10000     & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000    & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+1000000   & 161.764400 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 158.403400 \\
+10000000  & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} \\
+100000000 & 74721.719500 & \multicolumn{1}{c}{--} & \multicolumn{1}{c}{--} & 182454.176300 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -173,7 +174,7 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
     xmin=0.7,
     xmax=6.3,
     xtick={1,2,3,4,5,6},
-    xticklabels={100,500,1k,2k,5k,1M},
+    xticklabels={1k,10k,100k,1M,10M,100M},
     xlabel={Nombre d'éléments $N$},
     ylabel={Temps médian (ms)},
     grid=both,
@@ -198,13 +199,13 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {(1,0.0022) (2,0.0092) (3,0.0190) (4,0.0312) (5,0.0729) (6,13.3294)};
+\addplot[only marks,color=bleufonce,mark=*] coordinates {(1,0.0190) (4,13.3294) (6,1468.2544)};
 \addlegendentry{maison/vector}
-\addplot[color=turquoise,mark=square*] coordinates {(1,0.0342) (2,0.4996) (3,2.4272) (4,10.4511) (5,84.8620)};
+\addplot[only marks,color=turquoise,mark=square*] coordinates {(1,2.4272)};
 \addlegendentry{maison/list}
-\addplot[color=orange,mark=triangle*] coordinates {(1,0.0360) (2,0.1990) (3,0.3494) (4,0.6339) (5,1.6013)};
+\addplot[only marks,color=orange,mark=triangle*] coordinates {(1,0.3494)};
 \addlegendentry{maison/map}
-\addplot[color=violet,mark=diamond*] coordinates {(1,0.0015) (2,0.0069) (3,0.0147) (4,0.0253) (5,0.0610) (6,11.9526)};
+\addplot[only marks,color=violet,mark=diamond*] coordinates {(1,0.0147) (4,11.9526) (6,1346.7741)};
 \addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
@@ -216,13 +217,13 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {(1,0.0061) (2,0.0272) (3,0.0617) (4,0.1249) (5,0.3286) (6,196.6093)};
+\addplot[only marks,color=bleufonce,mark=*] coordinates {(1,0.0617) (4,196.6093) (6,71711.1940)};
 \addlegendentry{maison/vector}
-\addplot[color=turquoise,mark=square*] coordinates {(1,0.0276) (2,0.9334) (3,4.3532) (4,18.6375) (5,164.3226)};
+\addplot[only marks,color=turquoise,mark=square*] coordinates {(1,4.3532)};
 \addlegendentry{maison/list}
-\addplot[color=orange,mark=triangle*] coordinates {(1,0.0431) (2,0.3409) (3,0.8551) (4,2.1879) (5,7.1360)};
+\addplot[only marks,color=orange,mark=triangle*] coordinates {(1,0.8551)};
 \addlegendentry{maison/map}
-\addplot[color=violet,mark=diamond*] coordinates {(1,0.0023) (2,0.0136) (3,0.0292) (4,0.0511) (5,0.1370) (6,224.0423)};
+\addplot[only marks,color=violet,mark=diamond*] coordinates {(1,0.0292) (4,224.0423) (6,178762.3025)};
 \addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
@@ -234,13 +235,13 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {(1,0.0015) (2,0.0071) (3,0.0130) (4,0.0254) (5,0.0632) (6,12.6202)};
+\addplot[only marks,color=bleufonce,mark=*] coordinates {(1,0.0130) (4,12.6202) (6,2252.8156)};
 \addlegendentry{maison/vector}
-\addplot[color=turquoise,mark=square*] coordinates {(1,0.0184) (2,0.5089) (3,1.9869) (4,9.4980) (5,98.9628)};
+\addplot[only marks,color=turquoise,mark=square*] coordinates {(1,1.9869)};
 \addlegendentry{maison/list}
-\addplot[color=orange,mark=triangle*] coordinates {(1,0.0232) (2,0.1331) (3,0.3128) (4,0.5898) (5,1.4830)};
+\addplot[only marks,color=orange,mark=triangle*] coordinates {(1,0.3128)};
 \addlegendentry{maison/map}
-\addplot[color=violet,mark=diamond*] coordinates {(1,0.0016) (2,0.0068) (3,0.0127) (4,0.0255) (5,0.0602) (6,12.0642)};
+\addplot[only marks,color=violet,mark=diamond*] coordinates {(1,0.0127) (4,12.0642) (6,2210.4433)};
 \addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
@@ -252,13 +253,13 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 \centering
 \begin{tikzpicture}
 \begin{axis}[benchmark axis]
-\addplot[color=bleufonce,mark=*] coordinates {(1,0.0039) (2,0.0268) (3,0.0525) (4,0.1137) (5,0.3088) (6,161.7644)};
+\addplot[only marks,color=bleufonce,mark=*] coordinates {(1,0.0525) (4,161.7644) (6,74721.7195)};
 \addlegendentry{maison/vector}
-\addplot[color=turquoise,mark=square*] coordinates {(1,0.0267) (2,0.8900) (3,4.0292) (4,18.7734) (5,170.5749)};
+\addplot[only marks,color=turquoise,mark=square*] coordinates {(1,4.0292)};
 \addlegendentry{maison/list}
-\addplot[color=orange,mark=triangle*] coordinates {(1,0.0412) (2,0.3134) (3,0.9085) (4,2.1964) (5,7.8863)};
+\addplot[only marks,color=orange,mark=triangle*] coordinates {(1,0.9085)};
 \addlegendentry{maison/map}
-\addplot[color=violet,mark=diamond*] coordinates {(1,0.0024) (2,0.0135) (3,0.0228) (4,0.0565) (5,0.1256) (6,158.4034)};
+\addplot[only marks,color=violet,mark=diamond*] coordinates {(1,0.0228) (4,158.4034) (6,182454.1763)};
 \addlegendentry{STL/vector}
 \end{axis}
 \end{tikzpicture}
@@ -267,16 +268,19 @@ différents, notamment ceux de \texttt{list} et \texttt{vector}.
 
 \section{Comparaison}
 
-À un million d'éléments, la STL est légèrement plus rapide à l'insertion :
-\SI{11.9526}{ms} pour le tas min et \SI{12.0642}{ms} pour le tas max. Pour
-l'extraction complète, le tas maison/vector est plus rapide sur le tas min
-(\SI{196.6093}{ms}), tandis que la STL est plus rapide sur le tas max
-(\SI{158.4034}{ms}). Les variantes \texttt{list} et \texttt{map} sont
-nettement plus lentes sur les tailles testées.
+À $N=100\,000\,000$, l'insertion a pris \SI{1468.2544}{ms} pour le tas
+min maison/vector et \SI{1346.7741}{ms} avec la STL. Pour le tas max, les
+temps sont respectivement \SI{2252.8156}{ms} et \SI{2210.4433}{ms}.
+L'extraction complète a pris \SI{71711.1940}{ms} pour le tas min maison/vector
+contre \SI{178762.3025}{ms} avec la STL ; pour le tas max, \SI{74721.7195}{ms}
+et \SI{182454.1763}{ms}. Ces valeurs à 100 millions proviennent d'un seul
+essai et sont à interpréter comme des mesures ponctuelles, contrairement aux
+médianes à un million.
 
-Le programme accepte une saisie jusqu'à $10^9$ éléments, mais vérifie la
-mémoire disponible avant de lancer le benchmark. Les mesures de ce rapport
-vont jusqu'à un million d'éléments ; un test à un milliard n'a pas été exécuté
-car la mémoire libre vérifiée ne le permettait pas.
+Les tailles souhaitées pour le rapport sont $10^3$, $10^4$, $10^5$, $10^6$,
+$10^7$ et $10^8$. Les valeurs mesurées et conservées sont affichées ; les
+autres cellules restent vides plutôt que de présenter des estimations. Le
+programme accepte une saisie jusqu'à $10^9$ éléments, mais vérifie la mémoire
+disponible avant de lancer le benchmark.
 
 \end{document}
