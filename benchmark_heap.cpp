@@ -544,7 +544,7 @@ void runInteractiveMenu() {
             std::cout << "\nBenchmark termine. Resultats enregistres dans output.txt\n"
                       << std::fixed << std::setprecision(6);
             for (const BenchmarkResult& result : results) {
-                std::cout << result.containerName
+                std::cout << "Tas " << result.heapType << " - " << result.containerName
                           << " : insertion " << result.insertionMs
                           << " ms, extraction des " << count << " racines "
                           << result.extractionMs << " ms";
