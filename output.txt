@@ -1,27 +1,27 @@
 BENCHMARK DES TAS MIN ET MAX
-Nombre d'elements inseres : 100000000
+Nombre d'elements inseres : 200000
 Comparaison de l'insertion et de l'extraction de la racine.
 Les tas de chaque type utilisent les memes valeurs aleatoires.
 Les temps n'incluent ni la generation des valeurs ni ce fichier.
 Les tas maison sur list et map sont limites a 5000 elements.
 
 === Tas min - Maison / vector ===
-Insertion (100000000 elements) : 1468.254400 ms
-Extraction de toutes les racines (100000000 extractions) : 71711.194000 ms
-Temps moyen par extraction : 0.717112 us
+Insertion (200000 elements) : 2.415400 ms
+Extraction de toutes les racines (200000 extractions) : 22.422100 ms
+Temps moyen par extraction : 0.112110 us
 
 === Tas min - STL / vector ===
-Insertion (100000000 elements) : 1346.774100 ms
-Extraction de toutes les racines (100000000 extractions) : 178762.302500 ms
-Temps moyen par extraction : 1.787623 us
+Insertion (200000 elements) : 2.577400 ms
+Extraction de toutes les racines (200000 extractions) : 9.485200 ms
+Temps moyen par extraction : 0.047426 us
 
 === Tas max - Maison / vector ===
-Insertion (100000000 elements) : 2252.815600 ms
-Extraction de toutes les racines (100000000 extractions) : 74721.719500 ms
-Temps moyen par extraction : 0.747217 us
+Insertion (200000 elements) : 3.068800 ms
+Extraction de toutes les racines (200000 extractions) : 19.484400 ms
+Temps moyen par extraction : 0.097422 us
 
 === Tas max - STL / vector ===
-Insertion (100000000 elements) : 2210.443300 ms
-Extraction de toutes les racines (100000000 extractions) : 182454.176300 ms
-Temps moyen par extraction : 1.824542 us
+Insertion (200000 elements) : 2.090000 ms
+Extraction de toutes les racines (200000 extractions) : 8.239200 ms
+Temps moyen par extraction : 0.041196 us
 
